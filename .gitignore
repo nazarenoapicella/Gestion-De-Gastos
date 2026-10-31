@@ -1,0 +1,28 @@
+# Dependencias
+node_modules/
+
+# Variables de entorno (nunca se suben)
+.env
+.env.*
+!.env.example
+
+# Base de datos local
+*.db
+*.db-journal
+*.sqlite
+backend/data/
+
+# Build y salidas
+dist/
+build/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
