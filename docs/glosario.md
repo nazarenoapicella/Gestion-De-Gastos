@@ -1,4 +1,4 @@
-# Glosario — GastoClaro
+# Glosario — Gestion De Gastos
 
 > Versión 0.1 · Estado: Borrador · Última actualización: 2026-10-30
 

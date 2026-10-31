@@ -1,4 +1,4 @@
-# Plan técnico — GastoClaro
+# Plan técnico — Gestion De Gastos
 
 > Versión 1.0 · Estado: Vigente · Última actualización: 2026-10-30
 

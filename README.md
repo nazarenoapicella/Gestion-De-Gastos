@@ -1,4 +1,4 @@
-# GastoClaro
+# Gestion De Gastos
 
 Sistema web para registrar ingresos y gastos personales, ver el balance de cada mes, entender en qué categorías se gasta más y recibir avisos cuando se supera un límite propio.
 

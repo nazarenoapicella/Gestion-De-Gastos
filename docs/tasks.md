@@ -1,4 +1,4 @@
-# Tareas — GastoClaro
+# Tareas — Gestion De Gastos
 
 > Versión 1.0 · Última actualización: 2026-10-30
 

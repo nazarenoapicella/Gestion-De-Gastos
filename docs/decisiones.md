@@ -1,4 +1,4 @@
-# Decisiones — GastoClaro
+# Decisiones — Gestion De Gastos
 
 > Versión 0.1 · Estado: Vigente · Última actualización: 2026-10-30
 

@@ -4,7 +4,7 @@ Este archivo lo lee **todo agente antes de empezar**. Las reglas propias de cada
 
 ## Proyecto
 
-**GastoClaro** es un sistema web para que una persona registre sus ingresos y gastos, los vea por mes, entienda en qué categorías gasta y reciba avisos cuando se acerca o supera el límite que se puso. Un solo usuario, sin login, una sola moneda (ARS).
+**Gestion De Gastos** es un sistema web para que una persona registre sus ingresos y gastos, los vea por mes, entienda en qué categorías gasta y reciba avisos cuando se acerca o supera el límite que se puso. Un solo usuario, sin login, una sola moneda (ARS).
 
 ## Fuente de verdad
 

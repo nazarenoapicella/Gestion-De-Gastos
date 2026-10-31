@@ -1,4 +1,4 @@
-# Preguntas abiertas — GastoClaro
+# Preguntas abiertas — Gestion De Gastos
 
 > Versión 0.2 · Estado: Respondidas (pendiente de validación del cliente) · Última actualización: 2026-10-30
 
