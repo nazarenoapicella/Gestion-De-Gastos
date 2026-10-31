@@ -15,7 +15,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
 ## Etapa 1 — Fundaciones del backend
 
 ### T-01 — Esqueleto del backend y healthcheck
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev backend
 - **Qué hace:** crea el proyecto Node (`package.json` con scripts `start`, `dev`, `test`), la app Express con `createApp({ db, reloj })`, lectura de `.env`, manejo central de errores con el formato de D-19, clase `ErrorDeNegocio`, y sirve `frontend/` como estático.
 - **RN / HU:** D-19, D-21
@@ -28,12 +28,12 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   4. Una excepción inesperada en una ruta → 500 con `error.codigo = "ERROR_INTERNO"` y sin texto de la excepción en el cuerpo.
 
 ### T-02 — Esquema de base de datos y datos iniciales
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev backend
 - **Qué hace:** crea `schema.sql` con las tablas `categorias`, `movimientos` y `presupuestos` (plan §3), la conexión con `foreign_keys = ON` y un seed idempotente de las categorías por defecto.
 - **RN / HU:** RN-01, RN-02, RN-05, RN-06, RN-07 (seed)
 - **Depende de:** T-01
-- **Archivos esperados:** `src/db/schema.sql`, `src/db/index.js`, `src/db/seed.js`, `test/db.test.js`
+- - **Archivos esperados:** `src/db/schema.sql`, `src/db/index.js`, `src/db/seed.js`, `src/utils/texto.js` (normalización de nombres), `src/server.js` (abre la base al arrancar), `test/db.test.js`
 - **Terminada cuando:**
   1. Base vacía inicializada → existen las tablas `categorias`, `movimientos` y `presupuestos`.
   2. Tras el seed hay 11 categorías: 8 de tipo `GASTO` (Alimentación, Transporte, Vivienda, Servicios, Salud, Ocio, Educación, Otros gastos) y 3 de `INGRESO` (Sueldo, Ventas, Otros ingresos), todas activas.
