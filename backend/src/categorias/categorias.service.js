@@ -1,7 +1,7 @@
 import { ErrorDeNegocio } from '../errores.js';
 import { limpiarNombre, normalizarNombre } from '../utils/texto.js';
 import * as repositorio from './categorias.repository.js';
-
+import { convertirId } from '../utils/id.js';
 // Service: reglas de negocio de categorías (RN-01, RN-06, RN-07, RN-08, RN-09).
 
 export const TIPOS = ['INGRESO', 'GASTO'];
@@ -76,13 +76,6 @@ function revisarCambios(cuerpo) {
   }
   if (Object.keys(campos).length > 0) throw errorDeValidacion(campos);
   return cambios;
-}
-
-// Un id válido es un entero positivo escrito solo con dígitos; cualquier otra cosa no existe.
-function convertirId(texto) {
-  if (!/^\d+$/.test(texto)) return null;
-  const id = Number(texto);
-  return Number.isSafeInteger(id) ? id : null;
 }
 
 function errorNoEncontrada() {

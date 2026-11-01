@@ -1,11 +1,12 @@
 import { ErrorDeNegocio } from '../errores.js';
 import { validarMontoCentavos } from '../utils/dinero.js';
 import { hoy, validarFechaMovimiento } from '../utils/fecha.js';
+import { convertirId } from '../utils/id.js';
 import { revisarTipo } from '../categorias/categorias.service.js';
 import * as repositorioCategorias from '../categorias/categorias.repository.js';
 import * as repositorio from './movimientos.repository.js';
 
-// Service: reglas de negocio de movimientos (RN-01 a RN-05, RN-09).
+// Service: reglas de negocio de movimientos (RN-01 a RN-05, RN-09, RN-10).
 
 export const LARGO_MAXIMO_DESCRIPCION = 140;
 
@@ -13,6 +14,10 @@ const MENSAJE_GENERAL = 'Revisá los datos ingresados.';
 
 function errorDeValidacion(campos) {
   return new ErrorDeNegocio(400, 'VALIDACION', MENSAJE_GENERAL, campos);
+}
+
+function errorNoEncontrado() {
+  return new ErrorDeNegocio(404, 'NO_ENCONTRADO', 'El movimiento no existe.');
 }
 
 // Las utilidades de dinero y fecha lanzan un ErrorDeNegocio. Acá se convierte en
@@ -41,8 +46,10 @@ function revisarDescripcion(descripcion) {
 }
 
 // RN-04: la categoría debe existir, ser del mismo tipo que el movimiento y estar activa.
+// RN-09: al editar, la categoría que el movimiento ya tiene puede quedar aunque esté inactiva
+// (`categoriaActualId`); para cambiarla hay que elegir una activa.
 // `tipo` es null si el tipo enviado ya resultó inválido (ese error se informa aparte).
-function revisarCategoria(db, categoriaId, tipo) {
+function revisarCategoria(db, categoriaId, tipo, categoriaActualId) {
   if (typeof categoriaId !== 'number' || !Number.isSafeInteger(categoriaId)) {
     return { error: 'Elegí una categoría.' };
   }
@@ -51,23 +58,29 @@ function revisarCategoria(db, categoriaId, tipo) {
   if (tipo !== null && categoria.tipo !== tipo) {
     return { error: 'La categoría no corresponde al tipo del movimiento.' };
   }
-  if (!categoria.activa) return { error: 'La categoría está desactivada. Elegí una activa.' };
+  if (!categoria.activa && categoria.id !== categoriaActualId) {
+    return { error: 'La categoría está desactivada. Elegí una activa.' };
+  }
   return { valor: categoria };
 }
 
 export function crearServicioMovimientos(db, { reloj = () => new Date(), zonaHoraria } = {}) {
-  // Lee la categoría y luego inserta: va en una transacción para que nada cambie entre medio (plan §6).
-  const crearMovimiento = db.transaction((cuerpo) => {
+  // Valida el cuerpo completo. El alta y la edición comparten estas reglas (RN-10).
+  // Devuelve los valores ya limpios o lanza un 400 con todos los campos con error a la vez.
+  // `ahora` es el instante en que se atiende el pedido; de ahí sale "hoy".
+  function revisarCuerpo(cuerpo, ahora, categoriaActualId = null) {
     const { tipo, montoCentavos, fecha, categoriaId, descripcion } = cuerpo ?? {};
-
-    // El reloj se lee una sola vez: "hoy" y la fecha de carga salen del mismo instante.
-    const ahora = reloj();
     const fechaHoy = hoy(() => ahora, zonaHoraria);
 
     const resultadoTipo = revisarTipo(tipo);
     const resultadoMonto = capturar(() => validarMontoCentavos(montoCentavos), 'montoCentavos');
     const resultadoFecha = capturar(() => validarFechaMovimiento(fecha, fechaHoy), 'fecha');
-    const resultadoCategoria = revisarCategoria(db, categoriaId, resultadoTipo.error ? null : resultadoTipo.valor);
+    const resultadoCategoria = revisarCategoria(
+      db,
+      categoriaId,
+      resultadoTipo.error ? null : resultadoTipo.valor,
+      categoriaActualId
+    );
     const resultadoDescripcion = revisarDescripcion(descripcion);
 
     const campos = {};
@@ -78,18 +91,51 @@ export function crearServicioMovimientos(db, { reloj = () => new Date(), zonaHor
     if (resultadoDescripcion.error) campos.descripcion = resultadoDescripcion.error;
     if (Object.keys(campos).length > 0) throw errorDeValidacion(campos);
 
-    return repositorio.crear(db, {
+    return {
       montoCentavos: resultadoMonto.valor,
       fecha: resultadoFecha.valor,
       categoriaId: resultadoCategoria.valor.id,
       descripcion: resultadoDescripcion.valor,
-      creadoEn: ahora.toISOString(), // UTC, solo informativa
-    });
+    };
+  }
+
+  // Lee la categoría y luego inserta: va en una transacción para que nada cambie entre medio (plan §6).
+  const crearMovimiento = db.transaction((cuerpo) => {
+    // El reloj se lee una sola vez: "hoy" y la fecha de carga salen del mismo instante.
+    const ahora = reloj();
+    const valores = revisarCuerpo(cuerpo, ahora);
+    return repositorio.crear(db, { ...valores, creadoEn: ahora.toISOString() }); // UTC, solo informativa
+  });
+
+  // Busca el movimiento, valida y actualiza en una transacción.
+  const editarMovimiento = db.transaction((id, cuerpo) => {
+    const actual = repositorio.buscarPorId(db, id);
+    if (!actual) throw errorNoEncontrado();
+
+    const valores = revisarCuerpo(cuerpo, reloj(), actual.categoriaId);
+    return repositorio.actualizar(db, id, valores);
   });
 
   return {
     crear(cuerpo) {
       return crearMovimiento(cuerpo);
+    },
+
+    obtener(idTexto) {
+      const id = convertirId(idTexto);
+      if (id === null) throw errorNoEncontrado();
+
+      const movimiento = repositorio.buscarPorId(db, id);
+      if (!movimiento) throw errorNoEncontrado();
+      return movimiento;
+    },
+
+    // Orden de los chequeos: id inválido (404), movimiento inexistente (404), cuerpo inválido (400).
+    // Primero se busca el movimiento porque la regla de categoría inactiva depende de la que tiene hoy.
+    editar(idTexto, cuerpo) {
+      const id = convertirId(idTexto);
+      if (id === null) throw errorNoEncontrado();
+      return editarMovimiento(id, cuerpo);
     },
   };
 }

@@ -44,3 +44,14 @@ export function crear(db, { montoCentavos, fecha, categoriaId, descripcion, crea
     .run(montoCentavos, fecha, categoriaId, descripcion, creadoEn);
   return buscarPorId(db, Number(resultado.lastInsertRowid));
 }
+
+// Reemplaza los datos editables del movimiento y lo devuelve actualizado.
+// creado_en no se toca: la fecha de carga no cambia al editar.
+export function actualizar(db, id, { montoCentavos, fecha, categoriaId, descripcion }) {
+  db.prepare(
+    `UPDATE movimientos
+        SET monto_centavos = ?, fecha = ?, categoria_id = ?, descripcion = ?
+      WHERE id = ?`
+  ).run(montoCentavos, fecha, categoriaId, descripcion, id);
+  return buscarPorId(db, id);
+}
