@@ -7,6 +7,8 @@ import { crearRouterMovimientos } from './movimientos/movimientos.controller.js'
 import { crearServicioMovimientos } from './movimientos/movimientos.service.js';
 import { crearRouterReportes } from './reportes/reportes.controller.js';
 import { crearServicioReportes } from './reportes/reportes.service.js';
+import { crearRouterPresupuestos } from './presupuestos/presupuestos.controller.js';
+import { crearServicioPresupuestos } from './presupuestos/presupuestos.service.js';
 
 // db y reloj se inyectan para poder fijarlos en las pruebas (plan §6).
 export function createApp({ db = null, reloj = () => new Date() } = {}) {
@@ -28,6 +30,7 @@ export function createApp({ db = null, reloj = () => new Date() } = {}) {
       crearRouterMovimientos(crearServicioMovimientos(db, { reloj, zonaHoraria: config.timezone }))
     );
     app.use('/api/resumen', crearRouterReportes(crearServicioReportes(db)));
+    app.use('/api/presupuestos', crearRouterPresupuestos(crearServicioPresupuestos(db, { reloj })));
   }
 
   app.use(express.static(config.frontendDir));
