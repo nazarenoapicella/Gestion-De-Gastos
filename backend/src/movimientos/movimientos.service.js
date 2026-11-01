@@ -137,5 +137,14 @@ export function crearServicioMovimientos(db, { reloj = () => new Date(), zonaHor
       if (id === null) throw errorNoEncontrado();
       return editarMovimiento(id, cuerpo);
     },
+
+    
+    // Borrado definitivo (RN-10; la confirmación previa la pide la interfaz).
+    // Es una sola sentencia, así que no hace falta transacción: si no borró nada, no existía.
+    eliminar(idTexto) {
+      const id = convertirId(idTexto);
+      if (id === null) throw errorNoEncontrado();
+      if (!repositorio.eliminar(db, id)) throw errorNoEncontrado();
+    },
   };
 }

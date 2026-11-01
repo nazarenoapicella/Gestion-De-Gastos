@@ -16,5 +16,11 @@ export function crearRouterMovimientos(servicio) {
     res.json(servicio.editar(req.params.id, req.body));
   });
 
+
+  router.delete('/:id', (req, res) => {
+    servicio.eliminar(req.params.id);
+    res.status(204).end();
+  });
+
   return router;
 }

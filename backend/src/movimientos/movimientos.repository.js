@@ -55,3 +55,10 @@ export function actualizar(db, id, { montoCentavos, fecha, categoriaId, descripc
   ).run(montoCentavos, fecha, categoriaId, descripcion, id);
   return buscarPorId(db, id);
 }
+
+
+// Borra el movimiento (borrado definitivo, RN-10). Devuelve true si existía y se borró.
+export function eliminar(db, id) {
+  const resultado = db.prepare('DELETE FROM movimientos WHERE id = ?').run(id);
+  return resultado.changes > 0;
+}
