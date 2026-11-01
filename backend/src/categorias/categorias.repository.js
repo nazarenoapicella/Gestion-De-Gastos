@@ -65,3 +65,14 @@ export function actualizar(db, id, { nombre, nombreNormalizado, activa } = {}) {
   }
   return buscarPorId(db, id);
 }
+
+// Cantidad de movimientos que usan la categoría (activa o no).
+export function contarMovimientos(db, id) {
+  return db.prepare('SELECT COUNT(*) AS n FROM movimientos WHERE categoria_id = ?').get(id).n;
+}
+
+// Borra la categoría. Su presupuesto, si lo tiene, se elimina solo por el
+// ON DELETE CASCADE del esquema (requiere foreign_keys = ON, que abrirBase activa).
+export function eliminar(db, id) {
+  db.prepare('DELETE FROM categorias WHERE id = ?').run(id);
+}

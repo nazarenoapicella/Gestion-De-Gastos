@@ -2,7 +2,7 @@ import { ErrorDeNegocio } from '../errores.js';
 import { limpiarNombre, normalizarNombre } from '../utils/texto.js';
 import * as repositorio from './categorias.repository.js';
 
-// Service: reglas de negocio de categorías (RN-01, RN-06, RN-07, RN-09).
+// Service: reglas de negocio de categorías (RN-01, RN-06, RN-07, RN-08, RN-09).
 
 export const TIPOS = ['INGRESO', 'GASTO'];
 export const LARGO_MAXIMO_NOMBRE = 30;
@@ -121,6 +121,31 @@ export function crearServicioCategorias(db) {
     });
   });
 
+  // Cuenta los movimientos y borra en la misma transacción (RN-07, RN-08, plan §6).
+  const eliminarCategoria = db.transaction((id) => {
+    const categoria = repositorio.buscarPorId(db, id);
+    if (!categoria) throw errorNoEncontrada();
+
+    if (categoria.protegida) {
+      throw new ErrorDeNegocio(
+        409,
+        'CATEGORIA_PROTEGIDA',
+        'Esta categoría es protegida: no se puede eliminar.'
+      );
+    }
+
+    if (repositorio.contarMovimientos(db, id) > 0) {
+      throw new ErrorDeNegocio(
+        409,
+        'CATEGORIA_CON_MOVIMIENTOS',
+        'La categoría tiene movimientos y no se puede eliminar. Desactivala para dejar de usarla.'
+      );
+    }
+
+    // El presupuesto de la categoría, si existe, se elimina junto con ella (RN-08).
+    repositorio.eliminar(db, id);
+  });
+
   return {
     listar(consulta) {
       return repositorio.listar(db, revisarFiltros(consulta));
@@ -161,6 +186,13 @@ export function crearServicioCategorias(db) {
       } catch (err) {
         throw traducirErrorDeBase(err);
       }
+    },
+
+    // Orden de los chequeos: inexistente (404), protegida (409), con movimientos (409).
+    eliminar(idTexto) {
+      const id = convertirId(idTexto);
+      if (id === null) throw errorNoEncontrada();
+      eliminarCategoria(id);
     },
   };
 }

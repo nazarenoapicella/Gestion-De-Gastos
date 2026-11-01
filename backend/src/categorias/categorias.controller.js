@@ -16,5 +16,10 @@ export function crearRouterCategorias(servicio) {
     res.json(servicio.modificar(req.params.id, req.body));
   });
 
+  router.delete('/:id', (req, res) => {
+    servicio.eliminar(req.params.id);
+    res.status(204).end();
+  });
+
   return router;
 }
