@@ -26,3 +26,27 @@ export function totalesPorTipo(db, { desde, hasta }) {
   for (const fila of filas) totales[fila.tipo] = fila.total;
   return totales;
 }
+
+
+// Total por categoría de los movimientos con fecha entre `desde` y `hasta` (ambos inclusive).
+// Solo aparecen las categorías con movimientos en el rango, activas o no (RN-09, RN-13).
+// Ordenado por tipo, total descendente y, ante empate, por nombre sin tildes ni mayúsculas.
+export function totalesPorCategoria(db, { desde, hasta }) {
+  const filas = db
+    .prepare(
+      `SELECT c.id AS categoria_id, c.nombre AS nombre, c.tipo AS tipo, SUM(m.monto_centavos) AS total
+         FROM movimientos m
+         JOIN categorias c ON c.id = m.categoria_id
+        WHERE m.fecha BETWEEN ? AND ?
+        GROUP BY c.id
+        ORDER BY c.tipo, total DESC, c.nombre_normalizado`
+    )
+    .all(desde, hasta);
+
+  return filas.map((fila) => ({
+    categoriaId: fila.categoria_id,
+    nombre: fila.nombre,
+    tipo: fila.tipo,
+    total: fila.total,
+  }));
+}
