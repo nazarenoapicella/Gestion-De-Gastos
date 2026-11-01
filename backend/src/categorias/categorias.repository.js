@@ -46,3 +46,22 @@ export function crear(db, { nombre, nombreNormalizado, tipo }) {
     .run(nombre, nombreNormalizado, tipo);
   return buscarPorId(db, Number(resultado.lastInsertRowid));
 }
+
+// Cambia solo los campos que vengan definidos y devuelve la categoría actualizada.
+// Si el nuevo nombre choca con otra categoría del mismo tipo, SQLite lanza SQLITE_CONSTRAINT_UNIQUE.
+export function actualizar(db, id, { nombre, nombreNormalizado, activa } = {}) {
+  const asignaciones = [];
+  const parametros = [];
+  if (nombre !== undefined) {
+    asignaciones.push('nombre = ?', 'nombre_normalizado = ?');
+    parametros.push(nombre, nombreNormalizado);
+  }
+  if (activa !== undefined) {
+    asignaciones.push('activa = ?');
+    parametros.push(activa ? 1 : 0);
+  }
+  if (asignaciones.length > 0) {
+    db.prepare(`UPDATE categorias SET ${asignaciones.join(', ')} WHERE id = ?`).run(...parametros, id);
+  }
+  return buscarPorId(db, id);
+}

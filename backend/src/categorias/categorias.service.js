@@ -2,7 +2,7 @@ import { ErrorDeNegocio } from '../errores.js';
 import { limpiarNombre, normalizarNombre } from '../utils/texto.js';
 import * as repositorio from './categorias.repository.js';
 
-// Service: reglas de negocio de categorías (RN-01, RN-06).
+// Service: reglas de negocio de categorías (RN-01, RN-06, RN-07, RN-09).
 
 export const TIPOS = ['INGRESO', 'GASTO'];
 export const LARGO_MAXIMO_NOMBRE = 30;
@@ -51,7 +51,76 @@ function revisarFiltros({ tipo, activa } = {}) {
   return filtros;
 }
 
+// Cuerpo del PATCH: nombre y/o activa. El tipo no se puede modificar (RN-06).
+// Devuelve solo los cambios válidos; si hay algo mal, lanza 400 con todos los campos a la vez.
+function revisarCambios(cuerpo) {
+  const { nombre, activa, tipo } = cuerpo ?? {};
+  const campos = {};
+  const cambios = {};
+
+  if (tipo !== undefined) {
+    campos.tipo = 'El tipo de una categoría no se puede modificar.';
+  }
+  if (nombre !== undefined) {
+    const r = revisarNombre(nombre);
+    if (r.error) campos.nombre = r.error;
+    else cambios.nombre = r.valor;
+  }
+  if (activa !== undefined) {
+    if (typeof activa === 'boolean') cambios.activa = activa;
+    else campos.activa = 'El valor de activa debe ser true o false.';
+  }
+
+  if (Object.keys(campos).length === 0 && Object.keys(cambios).length === 0) {
+    campos.cuerpo = 'Indicá el nombre o si la categoría está activa.';
+  }
+  if (Object.keys(campos).length > 0) throw errorDeValidacion(campos);
+  return cambios;
+}
+
+// Un id válido es un entero positivo escrito solo con dígitos; cualquier otra cosa no existe.
+function convertirId(texto) {
+  if (!/^\d+$/.test(texto)) return null;
+  const id = Number(texto);
+  return Number.isSafeInteger(id) ? id : null;
+}
+
+function errorNoEncontrada() {
+  return new ErrorDeNegocio(404, 'NO_ENCONTRADO', 'La categoría no existe.');
+}
+
+// Si la base rechazó por UNIQUE, es un nombre repetido dentro del mismo tipo (RN-06).
+function traducirErrorDeBase(err) {
+  if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+    const mensaje = 'Ya existe una categoría con ese nombre.';
+    return new ErrorDeNegocio(409, 'NOMBRE_DUPLICADO', mensaje, { nombre: mensaje });
+  }
+  return err;
+}
+
 export function crearServicioCategorias(db) {
+  // Lee y luego escribe: va en una transacción para que nada cambie entre medio (plan §6).
+  const aplicarCambios = db.transaction((id, cambios) => {
+    const categoria = repositorio.buscarPorId(db, id);
+    if (!categoria) throw errorNoEncontrada();
+
+    // RN-07: las protegidas no se renombran ni se desactivan.
+    // Activar una protegida no cambia nada (siempre están activas), así que se permite.
+    if (categoria.protegida && (cambios.nombre !== undefined || cambios.activa === false)) {
+      throw new ErrorDeNegocio(
+        409,
+        'CATEGORIA_PROTEGIDA',
+        'Esta categoría es protegida: no se puede renombrar ni desactivar.'
+      );
+    }
+
+    return repositorio.actualizar(db, id, {
+      nombre: cambios.nombre,
+      nombreNormalizado: cambios.nombre !== undefined ? normalizarNombre(cambios.nombre) : undefined,
+      activa: cambios.activa,
+    });
+  });
+
   return {
     listar(consulta) {
       return repositorio.listar(db, revisarFiltros(consulta));
@@ -76,11 +145,21 @@ export function crearServicioCategorias(db) {
           tipo: resultadoTipo.valor,
         });
       } catch (err) {
-        if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
-          const mensaje = 'Ya existe una categoría con ese nombre.';
-          throw new ErrorDeNegocio(409, 'NOMBRE_DUPLICADO', mensaje, { nombre: mensaje });
-        }
-        throw err;
+        throw traducirErrorDeBase(err);
+      }
+    },
+
+    // Orden de los chequeos: cuerpo inválido (400), categoría inexistente (404),
+    // categoría protegida (409), nombre repetido (409).
+    modificar(idTexto, cuerpo) {
+      const cambios = revisarCambios(cuerpo);
+      const id = convertirId(idTexto);
+      if (id === null) throw errorNoEncontrada();
+
+      try {
+        return aplicarCambios(id, cambios);
+      } catch (err) {
+        throw traducirErrorDeBase(err);
       }
     },
   };

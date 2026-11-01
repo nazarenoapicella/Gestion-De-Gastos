@@ -12,5 +12,9 @@ export function crearRouterCategorias(servicio) {
     res.status(201).json(servicio.crear(req.body));
   });
 
+  router.patch('/:id', (req, res) => {
+    res.json(servicio.modificar(req.params.id, req.body));
+  });
+
   return router;
 }
