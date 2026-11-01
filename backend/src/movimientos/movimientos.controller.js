@@ -8,6 +8,9 @@ export function crearRouterMovimientos(servicio) {
     res.status(201).json(servicio.crear(req.body));
   });
 
+  router.get('/', (req, res) => {
+    res.json(servicio.listar(req.query));
+  });
   router.get('/:id', (req, res) => {
     res.json(servicio.obtener(req.params.id));
   });

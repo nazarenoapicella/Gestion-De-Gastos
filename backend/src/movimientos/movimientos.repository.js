@@ -62,3 +62,42 @@ export function eliminar(db, id) {
   const resultado = db.prepare('DELETE FROM movimientos WHERE id = ?').run(id);
   return resultado.changes > 0;
 }
+
+
+// Arma el WHERE del listado y del conteo. Los fragmentos son fijos: los valores van como parámetros.
+// `desde` y `hasta` son los límites del mes (texto AAAA-MM-DD, se comparan como texto).
+function armarFiltro({ desde, hasta, tipo, categoriaId } = {}) {
+  const condiciones = [];
+  const parametros = [];
+  if (desde !== undefined) {
+    condiciones.push('m.fecha BETWEEN ? AND ?');
+    parametros.push(desde, hasta);
+  }
+  if (tipo !== undefined) {
+    condiciones.push('c.tipo = ?');
+    parametros.push(tipo);
+  }
+  if (categoriaId !== undefined) {
+    condiciones.push('m.categoria_id = ?');
+    parametros.push(categoriaId);
+  }
+  const where = condiciones.length > 0 ? `WHERE ${condiciones.join(' AND ')}` : '';
+  return { where, parametros };
+}
+
+// Cantidad de movimientos que cumplen el filtro.
+export function contar(db, filtro) {
+  const { where, parametros } = armarFiltro(filtro);
+  return db
+    .prepare(`SELECT COUNT(*) AS n FROM movimientos m JOIN categorias c ON c.id = m.categoria_id ${where}`)
+    .get(...parametros).n;
+}
+
+// Una página de movimientos: fecha descendente y, a igual fecha, id descendente (RN-11).
+export function listar(db, filtro, { limite, desplazamiento }) {
+  const { where, parametros } = armarFiltro(filtro);
+  const filas = db
+    .prepare(`${SELECT_MOVIMIENTO} ${where} ORDER BY m.fecha DESC, m.id DESC LIMIT ? OFFSET ?`)
+    .all(...parametros, limite, desplazamiento);
+  return filas.map(aMovimiento);
+}

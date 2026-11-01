@@ -1,7 +1,6 @@
 import { ErrorDeNegocio } from '../errores.js';
 import { validarMontoCentavos } from '../utils/dinero.js';
-import { hoy, validarFechaMovimiento } from '../utils/fecha.js';
-import { convertirId } from '../utils/id.js';
+import { hoy, rangoDeMes, validarFechaMovimiento } from '../utils/fecha.js';import { convertirId } from '../utils/id.js';
 import { revisarTipo } from '../categorias/categorias.service.js';
 import * as repositorioCategorias from '../categorias/categorias.repository.js';
 import * as repositorio from './movimientos.repository.js';
@@ -62,6 +61,47 @@ function revisarCategoria(db, categoriaId, tipo, categoriaActualId) {
     return { error: 'La categoría está desactivada. Elegí una activa.' };
   }
   return { valor: categoria };
+}
+
+// RN-11: el listado se muestra en páginas de 20.
+export const TAMANIO_PAGINA = 20;
+
+// RN-11, RN-17: revisa los parámetros del listado. Todos son opcionales y llegan como texto de la URL.
+// Un mes mal formado es un error aparte (MES_INVALIDO); los demás se informan juntos, campo por campo.
+function revisarConsulta(consulta) {
+  const { mes, tipo, categoriaId, pagina } = consulta ?? {};
+  const filtro = {};
+
+  if (mes !== undefined) {
+    const { desde, hasta } = rangoDeMes(mes); // lanza MES_INVALIDO si no tiene el formato AAAA-MM
+    filtro.desde = desde;
+    filtro.hasta = hasta;
+  }
+
+  const campos = {};
+
+  if (tipo !== undefined) {
+    const r = revisarTipo(tipo);
+    if (r.error) campos.tipo = r.error;
+    else filtro.tipo = r.valor;
+  }
+
+  // La categoría es un filtro: si el número no corresponde a ninguna, simplemente no encuentra nada.
+  if (categoriaId !== undefined) {
+    const id = convertirId(categoriaId);
+    if (id === null) campos.categoriaId = 'La categoría debe ser un número entero.';
+    else filtro.categoriaId = id;
+  }
+
+  let numeroDePagina = 1;
+  if (pagina !== undefined) {
+    const n = convertirId(pagina);
+    if (n === null || n < 1) campos.pagina = 'La página debe ser un número entero mayor o igual a 1.';
+    else numeroDePagina = n;
+  }
+
+  if (Object.keys(campos).length > 0) throw errorDeValidacion(campos);
+  return { filtro, pagina: numeroDePagina };
 }
 
 export function crearServicioMovimientos(db, { reloj = () => new Date(), zonaHoraria } = {}) {
@@ -130,6 +170,23 @@ export function crearServicioMovimientos(db, { reloj = () => new Date(), zonaHor
       return movimiento;
     },
 
+    // RN-11: orden por fecha descendente y, a igual fecha, por id descendente; páginas de 20.
+    listar(consulta) {
+      const { filtro, pagina } = revisarConsulta(consulta);
+      const total = repositorio.contar(db, filtro);
+      const totalPaginas = Math.ceil(total / TAMANIO_PAGINA);
+
+      // Una página posterior a la última no es un error: llega vacía (CA-02.5).
+      const items =
+        pagina > totalPaginas
+          ? []
+          : repositorio.listar(db, filtro, {
+              limite: TAMANIO_PAGINA,
+              desplazamiento: (pagina - 1) * TAMANIO_PAGINA,
+            });
+
+      return { items, pagina, tamanioPagina: TAMANIO_PAGINA, total, totalPaginas };
+    },
     // Orden de los chequeos: id inválido (404), movimiento inexistente (404), cuerpo inválido (400).
     // Primero se busca el movimiento porque la regla de categoría inactiva depende de la que tiene hoy.
     editar(idTexto, cuerpo) {
