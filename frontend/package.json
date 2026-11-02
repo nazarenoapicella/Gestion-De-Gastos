@@ -1,0 +1,13 @@
+{
+  "name": "gestion-de-gastos-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Frontend de Gestion-De-Gastos (HTML, CSS y JavaScript sin frameworks)",
+  "engines": {
+    "node": ">=20.12"
+  },
+  "scripts": {
+    "test": "node --test"
+  }
+}

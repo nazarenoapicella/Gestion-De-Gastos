@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestión de Gastos</title>
+  <!-- Ícono embebido: evita un pedido a /favicon.ico, que la API respondería con un 404. -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%B0%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="encabezado">
+    <div class="encabezado__interior">
+      <h1 class="titulo-app">Gestión de Gastos</h1>
+      <nav aria-label="Secciones">
+        <ul class="navegacion">
+          <li><a href="#movimientos" data-enlace-vista="movimientos">Movimientos</a></li>
+          <li><a href="#resumen" data-enlace-vista="resumen">Resumen</a></li>
+          <li><a href="#categorias" data-enlace-vista="categorias">Categorías</a></li>
+          <li><a href="#presupuestos" data-enlace-vista="presupuestos">Presupuestos</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="contenido">
+    <noscript>Esta aplicación necesita JavaScript para funcionar.</noscript>
+
+    <section class="vista" data-vista="movimientos" data-titulo="Movimientos" aria-labelledby="titulo-movimientos" hidden>
+      <h2 id="titulo-movimientos" tabindex="-1">Movimientos</h2>
+      <p class="vista-pendiente">Esta pantalla todavía no está disponible.</p>
+    </section>
+
+    <section class="vista" data-vista="resumen" data-titulo="Resumen" aria-labelledby="titulo-resumen" hidden>
+      <h2 id="titulo-resumen" tabindex="-1">Resumen</h2>
+      <p class="vista-pendiente">Esta pantalla todavía no está disponible.</p>
+    </section>
+
+    <section class="vista" data-vista="categorias" data-titulo="Categorías" aria-labelledby="titulo-categorias" hidden>
+      <h2 id="titulo-categorias" tabindex="-1">Categorías</h2>
+      <p class="vista-pendiente">Esta pantalla todavía no está disponible.</p>
+    </section>
+
+    <section class="vista" data-vista="presupuestos" data-titulo="Presupuestos" aria-labelledby="titulo-presupuestos" hidden>
+      <h2 id="titulo-presupuestos" tabindex="-1">Presupuestos</h2>
+      <p class="vista-pendiente">Esta pantalla todavía no está disponible.</p>
+    </section>
+  </main>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
