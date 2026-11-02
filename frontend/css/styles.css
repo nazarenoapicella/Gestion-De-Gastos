@@ -177,3 +177,186 @@ textarea {
     padding: 1.5rem;
   }
 }
+
+
+/* Tarjetas, formularios y mensajes (T-17) */
+
+:root {
+  --color-error: #b42318;
+  --color-ok: #067647;
+}
+
+.tarjeta {
+  margin-top: var(--espacio);
+  padding: var(--espacio);
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+}
+
+.tarjeta h3 {
+  margin: 0 0 var(--espacio);
+  font-size: 1.125rem;
+}
+
+.formulario {
+  display: grid;
+  gap: var(--espacio);
+  max-width: 32rem;
+}
+
+.campo {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.campo label,
+.campo legend {
+  display: block;
+  padding: 0;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.campo__opcional {
+  font-weight: 400;
+  color: var(--color-texto-suave);
+}
+
+.campo input[type='text'],
+.campo input[type='date'],
+.campo select,
+.campo textarea {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  color: var(--color-texto);
+  background: #ffffff;
+  border: 1px solid #7b8794;
+  border-radius: var(--radio);
+}
+
+.campo textarea {
+  resize: vertical;
+}
+
+/* Un campo con error se distingue por el borde más grueso y por el texto del error, no solo por el color. */
+.campo [aria-invalid='true'] {
+  border: 2px solid var(--color-error);
+}
+
+.campo__ayuda {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  color: var(--color-texto-suave);
+}
+
+.campo__error {
+  margin: 0.25rem 0 0;
+  font-weight: 600;
+  color: var(--color-error);
+}
+
+.campo__error::before {
+  content: 'Error: ';
+}
+
+.opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.campo .opcion {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  margin: 0;
+  padding: 0 0.875rem;
+  font-weight: 400;
+  background: #ffffff;
+  border: 1px solid #7b8794;
+  border-radius: var(--radio);
+  cursor: pointer;
+}
+
+.campo .opcion input {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+}
+
+.campo .opcion:has(input:checked) {
+  font-weight: 700;
+  border: 2px solid var(--color-primario);
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.boton {
+  min-height: 2.75rem;
+  padding: 0 1.25rem;
+  font-weight: 600;
+  color: var(--color-primario-texto);
+  background: var(--color-primario);
+  border: 2px solid var(--color-primario);
+  border-radius: var(--radio);
+  cursor: pointer;
+}
+
+.boton:hover:not(:disabled) {
+  background: #163b69;
+  border-color: #163b69;
+}
+
+.boton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.boton--secundario {
+  color: var(--color-primario);
+  background: #ffffff;
+}
+
+.boton--secundario:hover:not(:disabled) {
+  background: #e8eef6;
+  border-color: var(--color-primario);
+}
+
+.mensaje {
+  margin: 0 0 var(--espacio);
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  border: 1px solid;
+  border-left-width: 6px;
+  border-radius: var(--radio);
+}
+
+.mensaje--ok {
+  color: var(--color-ok);
+  background: #ecfdf3;
+  border-color: var(--color-ok);
+}
+
+.mensaje--ok::before {
+  content: '✓ ';
+}
+
+.mensaje--error {
+  color: var(--color-error);
+  background: #fef3f2;
+  border-color: var(--color-error);
+}
+
+.mensaje--error::before {
+  content: 'Error: ';
+}

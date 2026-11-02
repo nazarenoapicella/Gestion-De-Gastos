@@ -28,7 +28,64 @@
 
     <section class="vista" data-vista="movimientos" data-titulo="Movimientos" aria-labelledby="titulo-movimientos" hidden>
       <h2 id="titulo-movimientos" tabindex="-1">Movimientos</h2>
-      <p class="vista-pendiente">Esta pantalla todavía no está disponible.</p>
+
+      <section class="tarjeta" data-formulario-movimiento aria-labelledby="titulo-formulario">
+        <h3 id="titulo-formulario" data-titulo-formulario>Nuevo movimiento</h3>
+        <p class="mensaje mensaje--ok" role="status" data-mensaje hidden></p>
+        <p class="mensaje mensaje--error" role="alert" data-error-general hidden></p>
+
+        <form class="formulario" data-formulario novalidate>
+          <fieldset class="campo">
+            <legend>Tipo</legend>
+            <div class="opciones">
+              <label class="opcion"><input type="radio" name="tipo" value="GASTO" checked> Gasto</label>
+              <label class="opcion"><input type="radio" name="tipo" value="INGRESO"> Ingreso</label>
+            </div>
+            <p class="campo__error" id="error-tipo" data-error="tipo" hidden></p>
+          </fieldset>
+
+          <div class="campo">
+            <label for="campo-monto">Monto</label>
+            <input type="text" id="campo-monto" name="monto" inputmode="decimal" autocomplete="off"
+                   placeholder="Ej.: 1.234,56" aria-required="true" aria-describedby="ayuda-monto error-monto">
+            <p class="campo__ayuda" id="ayuda-monto">Usá coma para los centavos.</p>
+            <p class="campo__error" id="error-monto" data-error="monto" hidden></p>
+          </div>
+
+          <div class="campo">
+            <label for="campo-fecha">Fecha</label>
+            <input type="date" id="campo-fecha" name="fecha" min="2000-01-01"
+                   aria-required="true" aria-describedby="error-fecha">
+            <p class="campo__error" id="error-fecha" data-error="fecha" hidden></p>
+          </div>
+
+          <div class="campo">
+            <label for="campo-categoria">Categoría</label>
+            <select id="campo-categoria" name="categoriaId" aria-required="true" aria-describedby="error-categoriaId">
+              <option value="">Elegí una categoría</option>
+            </select>
+            <p class="campo__error" id="error-categoriaId" data-error="categoriaId" hidden></p>
+          </div>
+
+          <div class="campo">
+            <label for="campo-descripcion">Descripción <span class="campo__opcional">(opcional)</span></label>
+            <textarea id="campo-descripcion" name="descripcion" rows="2"
+                      aria-describedby="ayuda-descripcion error-descripcion"></textarea>
+            <p class="campo__ayuda" id="ayuda-descripcion">Hasta 140 caracteres.</p>
+            <p class="campo__error" id="error-descripcion" data-error="descripcion" hidden></p>
+          </div>
+
+          <div class="acciones">
+            <button type="submit" class="boton" data-boton-guardar>Guardar movimiento</button>
+            <button type="button" class="boton boton--secundario" data-boton-cancelar hidden>Cancelar edición</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="tarjeta" aria-labelledby="titulo-listado">
+        <h3 id="titulo-listado">Listado</h3>
+        <p class="vista-pendiente">El listado de movimientos todavía no está disponible.</p>
+      </section>
     </section>
 
     <section class="vista" data-vista="resumen" data-titulo="Resumen" aria-labelledby="titulo-resumen" hidden>
