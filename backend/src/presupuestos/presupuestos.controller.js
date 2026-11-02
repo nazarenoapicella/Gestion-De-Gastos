@@ -4,6 +4,10 @@ import { Router } from 'express';
 export function crearRouterPresupuestos(servicio) {
   const router = Router();
 
+  router.get('/', (req, res) => {
+    res.json(servicio.estadoDelMes(req.query));
+  });
+
   router.put('/:categoriaId', (req, res) => {
     res.json(servicio.definirLimite(req.params.categoriaId, req.body));
   });

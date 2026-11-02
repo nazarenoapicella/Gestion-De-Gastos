@@ -1,5 +1,4 @@
-import { ErrorDeNegocio } from '../errores.js';
-import { rangoDeMes } from '../utils/fecha.js';
+import { rangoDeMesRequerido } from '../utils/fecha.js';
 import * as repositorio from './reportes.repository.js';
 
 // Service: reglas de los reportes (RN-12, RN-13, RN-17).
@@ -16,12 +15,7 @@ export function crearServicioReportes(db) {
     // RN-17: el mes es obligatorio y tiene el formato AAAA-MM. Un mes válido sin movimientos
     // no es un error: devuelve ceros y listas vacías.
     resumen(consulta) {
-      const mes = consulta?.mes;
-      if (mes === undefined) {
-        const mensaje = 'Indicá el mes en el formato AAAA-MM.';
-        throw new ErrorDeNegocio(400, 'MES_REQUERIDO', mensaje, { mes: mensaje });
-      }
-      const { desde, hasta } = rangoDeMes(mes); // lanza MES_INVALIDO si el formato no es válido
+            const { mes, desde, hasta } = rangoDeMesRequerido(consulta?.mes);
 
       // RN-12. Balance del mes: ingresos - gastos con fecha dentro del mes (puede ser negativo).
       const delMes = repositorio.totalesPorTipo(db, { desde, hasta });

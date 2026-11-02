@@ -1,10 +1,11 @@
 import { ErrorDeNegocio } from '../errores.js';
 import { validarMontoCentavos } from '../utils/dinero.js';
+import { rangoDeMesRequerido } from '../utils/fecha.js';
 import { convertirId } from '../utils/id.js';
 import * as repositorioCategorias from '../categorias/categorias.repository.js';
 import * as repositorio from './presupuestos.repository.js';
 
-// Service: reglas de negocio de presupuestos (RN-02, RN-09, RN-15).
+// Service: reglas de negocio de presupuestos (RN-02, RN-09, RN-15, RN-16, RN-17).
 
 const MENSAJE_GENERAL = 'Revisá los datos ingresados.';
 
@@ -23,6 +24,36 @@ function revisarLimite(limiteCentavos) {
     }
     throw err;
   }
+}
+
+// RN-16: estado según el consumo. Se compara con enteros (centavos), nunca con el porcentaje
+// redondeado: 7.999.999 de 10.000.000 se muestra como 80,0 % pero todavía es NORMAL, y
+// 10.000.001 de 10.000.000 se muestra como 100,0 % pero ya es EXCEDIDO.
+// Se usa BigInt para que los productos nunca pierdan precisión.
+function calcularEstado(gastado, limite) {
+  const g = BigInt(gastado);
+  const l = BigInt(limite);
+  if (g > l) return 'EXCEDIDO'; // más del 100 %
+  if (g * 100n >= l * 80n) return 'ALERTA'; // del 80 % al 100 %, ambos inclusive
+  return 'NORMAL'; // menos del 80 %
+}
+
+// RN-16: consumo a un decimal, mitad hacia arriba, solo con enteros (misma fórmula que RN-13).
+function calcularPorcentajeConsumo(gastado, limite) {
+  const g = BigInt(gastado);
+  const l = BigInt(limite);
+  return Number((2n * g * 1000n + l) / (2n * l)) / 10;
+}
+
+// Orden por consumo exacto descendente: a antes que b si a.gastado / a.limite > b.gastado / b.limite,
+// comparado con productos cruzados (sin dividir). Ante empate exacto, `sort` es estable y se
+// mantiene el orden por nombre con el que llegan las filas.
+function compararPorConsumoDescendente(a, b) {
+  const izquierda = BigInt(b.gastado) * BigInt(a.limite);
+  const derecha = BigInt(a.gastado) * BigInt(b.limite);
+  if (izquierda > derecha) return 1;
+  if (izquierda < derecha) return -1;
+  return 0;
 }
 
 export function crearServicioPresupuestos(db, { reloj = () => new Date() } = {}) {
@@ -70,6 +101,27 @@ export function crearServicioPresupuestos(db, { reloj = () => new Date() } = {})
       if (!repositorio.eliminar(db, categoriaId)) {
         throw errorNoEncontrado('La categoría no tiene un límite definido.');
       }
+    },
+
+    // RN-16, RN-17: estado de cada presupuesto en el mes. El mes es obligatorio; un mes válido
+    // sin límites o sin gastos no es un error. Se evalúa siempre con el límite vigente (RN-15),
+    // incluso para meses pasados.
+    estadoDelMes(consulta) {
+      const { mes, desde, hasta } = rangoDeMesRequerido(consulta?.mes);
+
+      const items = repositorio
+        .estadoPorCategoria(db, { desde, hasta })
+        .sort(compararPorConsumoDescendente)
+        .map((fila) => ({
+          categoriaId: fila.categoriaId,
+          categoriaNombre: fila.nombre,
+          limiteCentavos: fila.limite,
+          gastadoCentavos: fila.gastado,
+          porcentajeConsumo: calcularPorcentajeConsumo(fila.gastado, fila.limite),
+          estado: calcularEstado(fila.gastado, fila.limite),
+        }));
+
+      return { mes, items };
     },
   };
 }

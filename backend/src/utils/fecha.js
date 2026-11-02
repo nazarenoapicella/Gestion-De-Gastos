@@ -76,3 +76,14 @@ export function rangoDeMes(mes) {
   const ultimoDia = String(diasDelMes(anio, numeroDeMes)).padStart(2, '0');
   return { desde: `${mes}-01`, hasta: `${mes}-${ultimoDia}` };
 }
+
+
+// RN-17: en los reportes el mes es obligatorio. Si falta, MES_REQUERIDO; si no tiene el formato
+// AAAA-MM, MES_INVALIDO (lo lanza rangoDeMes). Devuelve el mes junto con su primer y último día.
+export function rangoDeMesRequerido(mes) {
+  if (mes === undefined) {
+    const mensaje = 'Indicá el mes en el formato AAAA-MM.';
+    throw new ErrorDeNegocio(400, 'MES_REQUERIDO', mensaje, { mes: mensaje });
+  }
+  return { mes, ...rangoDeMes(mes) };
+}
