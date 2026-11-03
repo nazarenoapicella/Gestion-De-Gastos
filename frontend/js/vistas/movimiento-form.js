@@ -270,9 +270,12 @@ export function iniciarFormularioMovimiento(raiz, { alGuardar = () => {}, alTerm
 
   prepararAlta();
 
-  return {
+    return {
     get modo() {
       return modo;
+    },
+    get idEnEdicion() {
+      return idEnEdicion;
     },
     abrirAlta,
     abrirEdicion,

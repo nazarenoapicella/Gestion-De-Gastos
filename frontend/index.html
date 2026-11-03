@@ -82,11 +82,57 @@
         </form>
       </section>
 
-      <section class="tarjeta" aria-labelledby="titulo-listado">
-        <h3 id="titulo-listado">Listado</h3>
-        <p class="vista-pendiente">El listado de movimientos todavía no está disponible.</p>
+      <section class="tarjeta" data-listado-movimientos aria-labelledby="titulo-listado">
+        <h3 id="titulo-listado" tabindex="-1" data-titulo-listado>Listado</h3>
+
+        <form class="filtros" data-filtros aria-label="Filtros del listado">
+          <div class="campo">
+            <label for="filtro-mes">Mes</label>
+            <select id="filtro-mes" name="mes"></select>
+          </div>
+
+          <div class="campo">
+            <label for="filtro-tipo">Tipo</label>
+            <select id="filtro-tipo" name="tipo">
+              <option value="">Todos</option>
+              <option value="GASTO">Gastos</option>
+              <option value="INGRESO">Ingresos</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="filtro-categoria">Categoría</label>
+            <select id="filtro-categoria" name="categoriaId">
+              <option value="">Todas</option>
+            </select>
+          </div>
+        </form>
+
+        <p class="mensaje mensaje--ok" role="status" data-listado-mensaje hidden></p>
+        <p class="mensaje mensaje--error" role="alert" data-listado-error hidden></p>
+        <button type="button" class="boton boton--secundario" data-listado-reintentar hidden>Reintentar</button>
+
+        <p class="listado__estado" role="status" data-listado-estado>Cargando movimientos…</p>
+        <div class="contenedor-desplazable" data-listado-contenedor aria-busy="true"></div>
+        <p class="vista-pendiente" data-listado-vacio hidden></p>
+
+        <nav class="paginacion" aria-label="Paginación de movimientos" data-paginacion hidden>
+          <button type="button" class="boton boton--secundario" data-pagina-anterior>Anterior</button>
+          <span class="paginacion__texto" data-pagina-texto></span>
+          <button type="button" class="boton boton--secundario" data-pagina-siguiente>Siguiente</button>
+        </nav>
+
+        <dialog class="dialogo" data-dialogo-eliminar aria-labelledby="titulo-dialogo-eliminar">
+          <h3 id="titulo-dialogo-eliminar">¿Eliminar este movimiento?</h3>
+          <p data-dialogo-detalle></p>
+          <p>Esta acción no se puede deshacer.</p>
+          <p class="mensaje mensaje--error" role="alert" data-dialogo-error hidden></p>
+          <div class="acciones">
+            <button type="button" class="boton boton--secundario" data-dialogo-cancelar autofocus>Cancelar</button>
+            <button type="button" class="boton boton--peligro" data-dialogo-confirmar>Confirmar</button>
+          </div>
+        </dialog>
       </section>
-    </section>
 
     <section class="vista" data-vista="resumen" data-titulo="Resumen" aria-labelledby="titulo-resumen" hidden>
       <h2 id="titulo-resumen" tabindex="-1">Resumen</h2>
