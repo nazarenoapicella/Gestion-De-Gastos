@@ -2,6 +2,7 @@
 // La vista activa se guarda en el hash de la URL (#resumen), así funcionan "Atrás" y los favoritos.
 // Un enlace como #movimientos/editar/12 abre el formulario de movimientos para editar el movimiento 12.
 
+import { iniciarCategorias } from './vistas/categorias.js';
 import { iniciarFormularioMovimiento } from './vistas/movimiento-form.js';
 import { iniciarListadoMovimientos } from './vistas/movimientos.js';
 
@@ -41,6 +42,8 @@ listado = iniciarListadoMovimientos(document.querySelector('[data-listado-movimi
   },
 });
 
+const pantallaCategorias = iniciarCategorias(document.querySelector('[data-categorias]'));
+
 // Decide qué hacer con el formulario cada vez que se muestra la vista de movimientos.
 function prepararFormulario(subruta) {
   const [accion, id] = subruta;
@@ -75,6 +78,7 @@ function mostrarVista({ moverFoco = false } = {}) {
     prepararFormulario(pedida === 'movimientos' ? subruta : []);
     listado.alMostrar();
   }
+  if (nombre === 'categorias') pantallaCategorias.alMostrar();
 }
 
 window.addEventListener('hashchange', () => mostrarVista({ moverFoco: true }));

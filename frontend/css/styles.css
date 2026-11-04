@@ -582,3 +582,66 @@ textarea {
     white-space: nowrap;
   }
 }
+
+/* Categorías (T-19) */
+
+.lista-categorias {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.categoria {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.categoria:last-child {
+  border-bottom: 0;
+}
+
+.categoria__datos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.categoria__nombre {
+  font-weight: 600;
+}
+
+/* Una categoría desactivada se distingue por la etiqueta "Desactivada" y la cursiva, no solo por el color. */
+.categoria--inactiva .categoria__nombre {
+  font-style: italic;
+  color: var(--color-texto-suave);
+}
+
+.categoria__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.etiqueta {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-texto);
+  background: #e4e7eb;
+  border: 1px solid #9aa5b1;
+  border-radius: 999px;
+}
+
+.etiqueta--inactiva {
+  color: #7a4b06;
+  background: #fff7e6;
+  border-color: #b7791f;
+}

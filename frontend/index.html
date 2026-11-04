@@ -141,7 +141,89 @@
 
     <section class="vista" data-vista="categorias" data-titulo="Categorías" aria-labelledby="titulo-categorias" hidden>
       <h2 id="titulo-categorias" tabindex="-1">Categorías</h2>
-      <p class="vista-pendiente">Esta pantalla todavía no está disponible.</p>
+
+      <div data-categorias>
+        <p class="texto-suave">
+          Las categorías protegidas ("Otros gastos" y "Otros ingresos") no se pueden renombrar, desactivar ni eliminar.
+          Una categoría que tiene movimientos solo se puede desactivar.
+        </p>
+
+        <p class="mensaje mensaje--ok" role="status" data-categorias-mensaje hidden></p>
+        <p class="mensaje mensaje--error" role="alert" data-categorias-aviso hidden></p>
+
+        <section class="tarjeta" aria-labelledby="titulo-nueva-categoria">
+          <h3 id="titulo-nueva-categoria">Nueva categoría</h3>
+
+          <form class="formulario" data-formulario-categoria novalidate>
+            <fieldset class="campo">
+              <legend>Tipo</legend>
+              <div class="opciones">
+                <label class="opcion"><input type="radio" name="tipo" value="GASTO" checked> Gasto</label>
+                <label class="opcion"><input type="radio" name="tipo" value="INGRESO"> Ingreso</label>
+              </div>
+              <p class="campo__error" id="error-tipo-categoria" data-error="tipo" hidden></p>
+            </fieldset>
+
+            <div class="campo">
+              <label for="campo-nombre-categoria">Nombre</label>
+              <input type="text" id="campo-nombre-categoria" name="nombre" autocomplete="off"
+                     aria-required="true" aria-describedby="ayuda-nombre-categoria error-nombre-categoria">
+              <p class="campo__ayuda" id="ayuda-nombre-categoria">Hasta 30 caracteres.</p>
+              <p class="campo__error" id="error-nombre-categoria" data-error="nombre" hidden></p>
+            </div>
+
+            <div class="acciones">
+              <button type="submit" class="boton" data-boton-crear>Crear categoría</button>
+            </div>
+          </form>
+        </section>
+
+        <p class="mensaje mensaje--error" role="alert" data-categorias-fallo hidden></p>
+        <button type="button" class="boton boton--secundario" data-categorias-reintentar hidden>Reintentar</button>
+        <p class="listado__estado" role="status" data-categorias-estado>Cargando categorías…</p>
+
+        <div data-categorias-contenedor aria-busy="true">
+          <section class="tarjeta" aria-labelledby="titulo-categorias-gasto">
+            <h3 id="titulo-categorias-gasto">Gastos</h3>
+            <ul class="lista-categorias" data-lista="GASTO"></ul>
+          </section>
+
+          <section class="tarjeta" aria-labelledby="titulo-categorias-ingreso">
+            <h3 id="titulo-categorias-ingreso">Ingresos</h3>
+            <ul class="lista-categorias" data-lista="INGRESO"></ul>
+          </section>
+        </div>
+
+        <dialog class="dialogo" data-dialogo-renombrar aria-labelledby="titulo-dialogo-renombrar">
+          <h3 id="titulo-dialogo-renombrar">Renombrar categoría</h3>
+          <form data-formulario-renombrar novalidate>
+            <p class="texto-suave" data-renombrar-actual></p>
+            <div class="campo">
+              <label for="campo-nuevo-nombre">Nuevo nombre</label>
+              <input type="text" id="campo-nuevo-nombre" name="nombre" autocomplete="off"
+                     aria-describedby="ayuda-nuevo-nombre error-nuevo-nombre">
+              <p class="campo__ayuda" id="ayuda-nuevo-nombre">Hasta 30 caracteres.</p>
+              <p class="campo__error" id="error-nuevo-nombre" data-renombrar-error-nombre hidden></p>
+            </div>
+            <p class="mensaje mensaje--error" role="alert" data-renombrar-error hidden></p>
+            <div class="acciones">
+              <button type="button" class="boton boton--secundario" data-renombrar-cancelar>Cancelar</button>
+              <button type="submit" class="boton" data-renombrar-guardar>Guardar</button>
+            </div>
+          </form>
+        </dialog>
+
+        <dialog class="dialogo" data-dialogo-eliminar aria-labelledby="titulo-dialogo-eliminar-categoria">
+          <h3 id="titulo-dialogo-eliminar-categoria">¿Eliminar esta categoría?</h3>
+          <p data-eliminar-detalle></p>
+          <p>Si tiene un límite de presupuesto, también se elimina. Esta acción no se puede deshacer.</p>
+          <p class="mensaje mensaje--error" role="alert" data-eliminar-error hidden></p>
+          <div class="acciones">
+            <button type="button" class="boton boton--secundario" data-eliminar-cancelar autofocus>Cancelar</button>
+            <button type="button" class="boton boton--peligro" data-eliminar-confirmar>Confirmar</button>
+          </div>
+        </dialog>
+      </div>
     </section>
 
     <section class="vista" data-vista="presupuestos" data-titulo="Presupuestos" aria-labelledby="titulo-presupuestos" hidden>
