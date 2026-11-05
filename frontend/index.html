@@ -136,7 +136,33 @@
 
     <section class="vista" data-vista="resumen" data-titulo="Resumen" aria-labelledby="titulo-resumen" hidden>
       <h2 id="titulo-resumen" tabindex="-1">Resumen</h2>
-      <p class="vista-pendiente">Esta pantalla todavía no está disponible.</p>
+
+      <div data-resumen>
+        <form class="filtros" data-resumen-filtros aria-label="Mes del resumen">
+          <div class="campo">
+            <label for="resumen-mes">Mes</label>
+            <select id="resumen-mes" name="mes"></select>
+          </div>
+        </form>
+
+        <p class="mensaje mensaje--error" role="alert" data-resumen-fallo hidden></p>
+        <button type="button" class="boton boton--secundario" data-resumen-reintentar hidden>Reintentar</button>
+        <p class="listado__estado" role="status" data-resumen-estado>Cargando resumen…</p>
+
+        <div data-resumen-contenido aria-busy="true" hidden>
+          <dl class="tarjetas-resumen" data-resumen-tarjetas></dl>
+
+          <section class="tarjeta" aria-labelledby="titulo-resumen-gastos">
+            <h3 id="titulo-resumen-gastos">Gastos por categoría</h3>
+            <div class="contenedor-desplazable" data-resumen-tabla="GASTO"></div>
+          </section>
+
+          <section class="tarjeta" aria-labelledby="titulo-resumen-ingresos">
+            <h3 id="titulo-resumen-ingresos">Ingresos por categoría</h3>
+            <div class="contenedor-desplazable" data-resumen-tabla="INGRESO"></div>
+          </section>
+        </div>
+      </div>
     </section>
 
     <section class="vista" data-vista="categorias" data-titulo="Categorías" aria-labelledby="titulo-categorias" hidden>

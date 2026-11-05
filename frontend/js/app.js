@@ -5,6 +5,7 @@
 import { iniciarCategorias } from './vistas/categorias.js';
 import { iniciarFormularioMovimiento } from './vistas/movimiento-form.js';
 import { iniciarListadoMovimientos } from './vistas/movimientos.js';
+import { iniciarResumen } from './vistas/resumen.js';
 
 const VISTA_INICIAL = 'movimientos';
 
@@ -43,6 +44,7 @@ listado = iniciarListadoMovimientos(document.querySelector('[data-listado-movimi
 });
 
 const pantallaCategorias = iniciarCategorias(document.querySelector('[data-categorias]'));
+const pantallaResumen = iniciarResumen(document.querySelector('[data-resumen]'));
 
 // Decide qué hacer con el formulario cada vez que se muestra la vista de movimientos.
 function prepararFormulario(subruta) {
@@ -79,6 +81,7 @@ function mostrarVista({ moverFoco = false } = {}) {
     listado.alMostrar();
   }
   if (nombre === 'categorias') pantallaCategorias.alMostrar();
+  if (nombre === 'resumen') pantallaResumen.alMostrar();
 }
 
 window.addEventListener('hashchange', () => mostrarVista({ moverFoco: true }));
