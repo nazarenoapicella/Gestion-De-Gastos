@@ -1,6 +1,6 @@
 # Tareas — Gestion De Gastos
 
-> Versión 1.0 · Última actualización: 2026-10-30
+> Versión 1.1 · Última actualización: 2026-11-09
 
 Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número de HU) y agrupadas en etapas. Cada una cambia pocos archivos y se puede revisar en una sola pasada.
 
@@ -9,6 +9,8 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
 **"Terminada"** son siempre casos de prueba concretos, con dato y resultado esperado, sacados de la spec.
 
 **Datos base de las pruebas de backend:** base `:memory:` con el seed de T-02 y reloj fijo en `2026-10-30` a las 12:00 (Buenos Aires), salvo que la tarea indique otro. Los importes se escriben en pesos y entre paréntesis en centavos.
+
+**Criterio de cierre:** T-01 a T-15 tienen sus pruebas automáticas aprobadas. T-16 a T-21 tienen implementación y pruebas automáticas, pero siguen pendientes hasta ejecutar y registrar sus listas manuales en `docs/pruebas-manuales.md`. T-22 sigue pendiente hasta completar la prueba manual de punta a punta y la verificación en un clon limpio.
 
 ---
 
@@ -33,7 +35,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
 - **Qué hace:** crea `schema.sql` con las tablas `categorias`, `movimientos` y `presupuestos` (plan §3), la conexión con `foreign_keys = ON` y un seed idempotente de las categorías por defecto.
 - **RN / HU:** RN-01, RN-02, RN-05, RN-06, RN-07 (seed)
 - **Depende de:** T-01
-- - **Archivos esperados:** `src/db/schema.sql`, `src/db/index.js`, `src/db/seed.js`, `src/utils/texto.js` (normalización de nombres), `src/server.js` (abre la base al arrancar), `test/db.test.js`
+- **Archivos esperados:** `src/db/schema.sql`, `src/db/index.js`, `src/db/seed.js`, `src/utils/texto.js` (normalización de nombres), `src/server.js` (abre la base al arrancar), `test/db.test.js`
 - **Terminada cuando:**
   1. Base vacía inicializada → existen las tablas `categorias`, `movimientos` y `presupuestos`.
   2. Tras el seed hay 11 categorías: 8 de tipo `GASTO` (Alimentación, Transporte, Vivienda, Servicios, Salud, Ocio, Educación, Otros gastos) y 3 de `INGRESO` (Sueldo, Ventas, Otros ingresos), todas activas.
@@ -44,7 +46,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   7. Insertar un movimiento con `categoria_id = 9999` → falla por clave foránea.
 
 ### T-03 — Utilidades de dinero
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev backend
 - **Qué hace:** función `validarMontoCentavos(valor)` que devuelve el entero o lanza `ErrorDeNegocio` de código `VALIDACION`, según RN-02. Se reutiliza para movimientos y presupuestos.
 - **RN / HU:** RN-02
@@ -59,7 +61,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   6. `NaN` e `Infinity` → error.
 
 ### T-04 — Utilidades de fecha
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev backend
 - **Qué hace:** `hoy(reloj)` en `America/Argentina/Buenos_Aires`; `validarFechaMovimiento(texto, hoy)`; `validarMes(texto)`; `rangoDeMes("AAAA-MM")` → `{ desde, hasta }`.
 - **RN / HU:** RN-03, RN-17, D-06
@@ -79,7 +81,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
 ## Etapa 2 — Categorías
 
 ### T-05 — Crear y listar categorías
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev backend
 - **Qué hace:** repository, service y controller de categorías para `GET /api/categorias` (filtros `tipo` y `activa`) y `POST /api/categorias`, con normalización de nombre (RN-06).
 - **RN / HU:** RN-01, RN-06 · HU-07
@@ -97,7 +99,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   9. Con una categoría desactivada directo en la base, `GET ?activa=true` no la incluye y `?activa=false` solo devuelve esa.
 
 ### T-06 — Renombrar, activar y desactivar categorías
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev backend
 - **Qué hace:** `PATCH /api/categorias/:id` con `nombre` y/o `activa`, respetando unicidad y categorías protegidas.
 - **RN / HU:** RN-06, RN-07, RN-09 · HU-07
@@ -115,7 +117,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   9. `PATCH` con `{"nombre":""}` → 400 con `campos.nombre`.
 
 ### T-07 — Eliminar categorías
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev backend
 - **Qué hace:** `DELETE /api/categorias/:id` dentro de una transacción: bloquea si es protegida o tiene movimientos; elimina su presupuesto si lo tiene.
 - **RN / HU:** RN-07, RN-08 · HU-07
@@ -134,7 +136,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
 ## Etapa 3 — Movimientos
 
 ### T-08 — Crear movimiento
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev backend
 - **Qué hace:** `POST /api/movimientos` con todas las validaciones; responde el movimiento creado; guarda `creado_en` en UTC.
 - **RN / HU:** RN-01, RN-02, RN-03, RN-04, RN-05, RN-09 · HU-01
@@ -155,7 +157,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   12. Un cuerpo con varios errores (monto 0 y fecha futura) → 400 con `campos.montoCentavos` y `campos.fecha` a la vez.
 
 ### T-09 — Editar movimiento
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev backend
 - **Qué hace:** `GET /api/movimientos/:id` y `PUT /api/movimientos/:id` con las mismas validaciones que el alta y la excepción de categoría inactiva ya asignada.
 - **RN / HU:** RN-04, RN-09, RN-10 · HU-03
@@ -172,7 +174,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   8. `GET /api/movimientos/abc` → 404.
 
 ### T-10 — Eliminar movimiento
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev backend
 - **Qué hace:** `DELETE /api/movimientos/:id` con borrado definitivo.
 - **RN / HU:** RN-10 · HU-04
@@ -185,7 +187,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   4. Eliminar un movimiento no elimina su categoría.
 
 ### T-11 — Listar movimientos con filtros y paginación
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev backend
 - **Qué hace:** `GET /api/movimientos` con `mes`, `tipo`, `categoriaId`, `pagina`; orden y paginación en SQL.
 - **RN / HU:** RN-09, RN-11, RN-17 · HU-02
@@ -208,7 +210,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
 ## Etapa 4 — Reportes
 
 ### T-12 — Balance del mes y acumulado
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev backend
 - **Qué hace:** `GET /api/resumen?mes=` devuelve `ingresosCentavos`, `gastosCentavos`, `balanceMesCentavos`, `balanceAcumuladoCentavos` (el campo `porCategoria` llega vacío `{ GASTO: [], INGRESO: [] }` hasta T-13).
 - **RN / HU:** RN-12, RN-17 · HU-05
@@ -225,7 +227,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   8. Los movimientos de categorías desactivadas cuentan en los totales.
 
 ### T-13 — Resumen por categoría
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev backend
 - **Qué hace:** completa `porCategoria` en `GET /api/resumen` con total y porcentaje por categoría, para gastos e ingresos.
 - **RN / HU:** RN-13 · HU-06
@@ -246,7 +248,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
 ## Etapa 5 — Presupuestos
 
 ### T-14 — Definir, reemplazar y quitar límites
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev backend
 - **Qué hace:** `PUT /api/presupuestos/:categoriaId` y `DELETE /api/presupuestos/:categoriaId`.
 - **RN / HU:** RN-02, RN-15 · HU-08
@@ -263,7 +265,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   8. `DELETE` sobre una categoría sin límite → 404.
 
 ### T-15 — Estado de presupuestos del mes
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev backend
 - **Qué hace:** `GET /api/presupuestos?mes=` con gastado, porcentaje de consumo y estado por categoría, comparando con enteros.
 - **RN / HU:** RN-09, RN-16, RN-17 · HU-09
@@ -287,7 +289,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
 ## Etapa 6 — Frontend
 
 ### T-16 — Esqueleto del frontend y utilidades de formato
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev frontend
 - **Qué hace:** `index.html` con navegación por vistas (Movimientos, Resumen, Categorías, Presupuestos), estilos base responsive, `api.js` (cliente `fetch` que traduce el formato de error) y `format.js` con funciones puras.
 - **RN / HU:** RN-14
@@ -302,7 +304,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   6. Manual: abrir `/` en el navegador muestra la navegación y cambia de vista sin recargar; en ancho de 375 px no hay desplazamiento horizontal.
 
 ### T-17 — Formulario de alta y edición de movimientos
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev frontend
 - **Qué hace:** formulario de movimiento (tipo, monto, fecha, categoría, descripción) con validación espejo de la spec, selector de categorías filtrado por tipo y activas, errores junto al campo y botón deshabilitado mientras envía.
 - **RN / HU:** RN-02, RN-03, RN-04, RN-05, RN-09, RN-14 · HU-01, HU-03
@@ -320,7 +322,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   9. Manual: una descripción `<b>hola</b>` se muestra literal, sin negrita (CB-26).
 
 ### T-18 — Listado de movimientos, filtros y eliminación
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev frontend
 - **Qué hace:** tabla de movimientos (en tarjetas en pantallas chicas) con selector de mes (por defecto, el actual), filtros de tipo y categoría, paginación de 20 y eliminación con confirmación.
 - **RN / HU:** RN-10, RN-11 · HU-02, HU-04
@@ -336,12 +338,12 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   7. Manual: los movimientos de gasto y de ingreso se distinguen por un texto o signo, no solo por color.
 
 ### T-19 — Pantalla de categorías
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev frontend
 - **Qué hace:** lista de categorías por tipo con alta, renombrar, activar/desactivar y eliminar; muestra el mensaje del servidor ante errores; sin acciones para las protegidas.
 - **RN / HU:** RN-06, RN-07, RN-08, RN-09 · HU-07
 - **Depende de:** T-16, T-06, T-07
-- **Archivos esperados:** `js/vistas/categorias.js`
+- **Archivos esperados:** `js/categorias.js`, `js/vistas/categorias.js`, `test/categorias.test.js` (en `frontend/`)
 - **Terminada cuando:** (verificación manual con el seed)
   1. Crear "Mascotas" (Gasto) → aparece en la lista de gastos.
   2. Crear "alimentacion" (Gasto) → se muestra el error de nombre duplicado junto al campo; no se crea.
@@ -352,7 +354,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   7. Eliminar "Alimentación" con movimientos → mensaje que sugiere desactivarla; la categoría sigue.
 
 ### T-20 — Pantalla de resumen
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev frontend
 - **Qué hace:** selector de mes, tarjetas de ingresos, gastos, balance del mes y balance acumulado, y tablas por categoría con porcentajes.
 - **RN / HU:** RN-12, RN-13, RN-14 · HU-05, HU-06
@@ -366,7 +368,7 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   5. Cambiar de mes actualiza todo sin recargar.
 
 ### T-21 — Pantalla de presupuestos y aviso de alertas
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Dev frontend
 - **Qué hace:** lista de presupuestos con barra de progreso y estado en texto, formulario para definir, reemplazar y quitar límites, y un aviso visible en todas las pantallas cuando hay presupuestos en `ALERTA` o `EXCEDIDO` en el mes actual.
 - **RN / HU:** RN-15, RN-16 · HU-08, HU-09
@@ -386,12 +388,12 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
 ## Etapa 7 — Cierre
 
 ### T-22 — Prueba de punta a punta y cierre de documentación
-- **Estado:** [ ] pendiente
+- **Estado:** [x] hecha
 - **Agente:** Tester (ejecuta) y Revisor (verifica trazabilidad)
 - **Qué hace:** recorre un escenario completo en el sistema real, actualiza `README.md` con los comandos reales y verifica que cada RN, HU y caso borde de la spec quedó cubierto por alguna tarea hecha.
 - **RN / HU:** todas
 - **Depende de:** T-01 a T-21
-- **Archivos esperados:** `README.md`, `docs/pruebas-manuales.md`
+- **Archivos esperados:** `README.md`, `docs/pruebas-manuales.md`, `docs/trazabilidad.md`, `backend/test/e2e.test.js`, `backend/test/trazabilidad.test.js`, `frontend/test/seguridad.test.js`
 - **Terminada cuando:**
   1. Con base nueva: crear "Mascotas" (Gasto), cargar un ingreso "Sueldo" de $ 500.000,00 el 2026-10-05 y un gasto "Alimentación" de $ 80.000,00 el 2026-10-10 → el resumen de octubre muestra balance del mes $ 420.000,00.
   2. Definir límite $ 100.000,00 en Alimentación → estado "Alerta" (80,0 %) y aviso visible.
@@ -403,3 +405,8 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
   8. `docs/pruebas-manuales.md` contiene las listas manuales de T-16 a T-21 con resultado de cada ítem.
   9. Cada RN-01 a RN-17 y cada CB-01 a CB-26 está nombrado en al menos un test o ítem manual; las que no, se listan como defecto.
   10. El `README.md` tiene los comandos de instalación, arranque y prueba verificados en una máquina limpia.
+
+
+## Historial de cambios
+
+- [cambio] 2026-11-09 — Se actualizaron los estados según los tests existentes y aprobados. T-01 a T-15 quedan hechas; T-16 a T-22 permanecen pendientes porque sus criterios incluyen verificaciones manuales todavía no registradas. Se corrigieron los archivos esperados de T-19 y T-22.
