@@ -748,3 +748,119 @@ textarea {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+
+/* Presupuestos y aviso de alertas (T-21) */
+
+.aviso-alertas {
+  color: #4a2f00;
+  background: #fff7e6;
+  border-bottom: 4px solid #b7791f;
+}
+
+.aviso-alertas__interior {
+  max-width: var(--ancho-maximo);
+  margin: 0 auto;
+  padding: 0.75rem var(--espacio);
+}
+
+.aviso-alertas__titulo {
+  margin: 0 0 0.25rem;
+  font-weight: 700;
+}
+
+.aviso-alertas__lista {
+  margin: 0 0 0.5rem;
+  padding-left: 1.25rem;
+}
+
+/* "Excedido" se distingue por la negrita y por la palabra, no solo por el color. */
+.aviso-alertas__item--excedido {
+  font-weight: 700;
+}
+
+.aviso-alertas__enlace {
+  color: inherit;
+  font-weight: 600;
+}
+
+.lista-presupuestos {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.presupuesto {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.presupuesto:last-child {
+  border-bottom: 0;
+}
+
+.presupuesto__cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.presupuesto__nombre {
+  font-weight: 600;
+}
+
+.presupuesto__detalle {
+  margin: 0 0 0.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.presupuesto__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Barra de progreso: la caja recorta el relleno y este no pasa de su ancho, así nunca desborda. */
+.barra {
+  height: 0.75rem;
+  margin: 0.5rem 0;
+  overflow: hidden;
+  background: #e4e7eb;
+  border: 1px solid #9aa5b1;
+  border-radius: 999px;
+}
+
+.barra__relleno {
+  height: 100%;
+  max-width: 100%;
+  background: var(--color-ok);
+}
+
+.barra__relleno--alerta {
+  background: #b7791f;
+}
+
+/* Excedido: color y rayas, para que no dependa solo del color. */
+.barra__relleno--excedido {
+  background-color: var(--color-error);
+  background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.4) 0 6px, transparent 6px 12px);
+}
+
+.etiqueta--normal {
+  color: var(--color-ok);
+  background: #ecfdf3;
+  border-color: var(--color-ok);
+}
+
+.etiqueta--alerta {
+  color: #7a4b06;
+  background: #fff7e6;
+  border-color: #b7791f;
+}
+
+.etiqueta--excedido {
+  color: var(--color-error);
+  background: #fef3f2;
+  border-color: var(--color-error);
+}

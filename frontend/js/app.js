@@ -2,9 +2,11 @@
 // La vista activa se guarda en el hash de la URL (#resumen), así funcionan "Atrás" y los favoritos.
 // Un enlace como #movimientos/editar/12 abre el formulario de movimientos para editar el movimiento 12.
 
+import { iniciarAvisoAlertas } from './aviso-alertas.js';
 import { iniciarCategorias } from './vistas/categorias.js';
 import { iniciarFormularioMovimiento } from './vistas/movimiento-form.js';
 import { iniciarListadoMovimientos } from './vistas/movimientos.js';
+import { iniciarPresupuestos } from './vistas/presupuestos.js';
 import { iniciarResumen } from './vistas/resumen.js';
 
 const VISTA_INICIAL = 'movimientos';
@@ -17,6 +19,10 @@ const nombresDeVistas = vistas.map((vista) => vista.dataset.vista);
 function limpiarEnlaceDeEdicion() {
   if (location.hash !== '#movimientos') history.replaceState(null, '', '#movimientos');
 }
+
+// El aviso de presupuestos es de todas las pantallas: se pone al día al navegar y, solo, después de cualquier
+// escritura que el servidor acepte (api.js emite el evento "cambio").
+const avisoAlertas = iniciarAvisoAlertas(document.querySelector('[data-aviso-alertas]'));
 
 let listado = null; // se crea después del formulario; el formulario lo usa para refrescar el listado
 
@@ -45,6 +51,7 @@ listado = iniciarListadoMovimientos(document.querySelector('[data-listado-movimi
 
 const pantallaCategorias = iniciarCategorias(document.querySelector('[data-categorias]'));
 const pantallaResumen = iniciarResumen(document.querySelector('[data-resumen]'));
+const pantallaPresupuestos = iniciarPresupuestos(document.querySelector('[data-presupuestos]'));
 
 // Decide qué hacer con el formulario cada vez que se muestra la vista de movimientos.
 function prepararFormulario(subruta) {
@@ -82,6 +89,9 @@ function mostrarVista({ moverFoco = false } = {}) {
   }
   if (nombre === 'categorias') pantallaCategorias.alMostrar();
   if (nombre === 'resumen') pantallaResumen.alMostrar();
+  if (nombre === 'presupuestos') pantallaPresupuestos.alMostrar();
+
+  avisoAlertas.actualizar();
 }
 
 window.addEventListener('hashchange', () => mostrarVista({ moverFoco: true }));

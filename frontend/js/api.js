@@ -11,6 +11,10 @@ export class ErrorDeApi extends Error {
   }
 }
 
+// Aviso de cambios: se emite un evento "cambio" cada vez que el servidor acepta una escritura
+// (POST, PUT, PATCH o DELETE). Las partes de la pantalla que dependen de los datos que cambian otras
+// (como el aviso de presupuestos) lo escuchan para ponerse al día solas, sin que cada pantalla tenga que avisarles.
+export const cambios = new EventTarget();
 const MENSAJE_SIN_CONEXION = 'No se pudo conectar con el servidor. Revisá tu conexión e intentá de nuevo.';
 const MENSAJE_INESPERADO = 'El servidor respondió de forma inesperada. Intentá de nuevo.';
 
@@ -40,7 +44,9 @@ async function pedir(metodo, ruta, cuerpo) {
     }
   }
 
-  if (respuesta.ok) {
+    if (respuesta.ok) {
+    // El servidor aceptó una escritura: los datos cambiaron, aunque la respuesta no se pueda leer.
+    if (metodo !== 'GET') cambios.dispatchEvent(new Event('cambio'));
     if (datos === undefined) {
       throw new ErrorDeApi({ status: respuesta.status, codigo: 'RESPUESTA_INESPERADA', mensaje: MENSAJE_INESPERADO });
     }

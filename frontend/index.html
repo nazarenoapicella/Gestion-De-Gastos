@@ -23,6 +23,13 @@
     </div>
   </header>
 
+  <div class="aviso-alertas" data-aviso-alertas role="status" hidden>
+    <div class="aviso-alertas__interior">
+      <p class="aviso-alertas__titulo" data-aviso-titulo></p>
+      <ul class="aviso-alertas__lista" data-aviso-lista></ul>
+      <a class="aviso-alertas__enlace" href="#presupuestos">Ver presupuestos</a>
+    </div>
+  </div>
   <main class="contenido">
     <noscript>Esta aplicación necesita JavaScript para funcionar.</noscript>
 
@@ -252,9 +259,66 @@
       </div>
     </section>
 
-    <section class="vista" data-vista="presupuestos" data-titulo="Presupuestos" aria-labelledby="titulo-presupuestos" hidden>
+        <section class="vista" data-vista="presupuestos" data-titulo="Presupuestos" aria-labelledby="titulo-presupuestos" hidden>
       <h2 id="titulo-presupuestos" tabindex="-1">Presupuestos</h2>
-      <p class="vista-pendiente">Esta pantalla todavía no está disponible.</p>
+
+      <div data-presupuestos>
+        <p class="texto-suave">
+          Un límite mensual por categoría de gasto, el mismo para todos los meses. Se avisa desde el 80 % y cuando se
+          supera el 100 %. Los avisos nunca impiden cargar movimientos.
+        </p>
+
+        <p class="mensaje mensaje--ok" role="status" data-presupuestos-mensaje hidden></p>
+        <p class="mensaje mensaje--error" role="alert" data-presupuestos-aviso hidden></p>
+        <p class="mensaje mensaje--error" role="alert" data-presupuestos-fallo hidden></p>
+        <button type="button" class="boton boton--secundario" data-presupuestos-reintentar hidden>Reintentar</button>
+        <p class="listado__estado" role="status" data-presupuestos-estado>Cargando presupuestos…</p>
+
+        <div data-presupuestos-contenido aria-busy="true" hidden>
+          <section class="tarjeta" aria-labelledby="titulo-definir-limite">
+            <h3 id="titulo-definir-limite">Definir límite</h3>
+
+            <form class="formulario" data-formulario-limite novalidate>
+              <div class="campo">
+                <label for="limite-categoria">Categoría</label>
+                <select id="limite-categoria" name="categoriaId" aria-required="true"
+                        aria-describedby="error-limite-categoria"></select>
+                <p class="campo__error" id="error-limite-categoria" data-error="categoriaId" hidden></p>
+              </div>
+
+              <div class="campo">
+                <label for="limite-monto">Límite mensual</label>
+                <input type="text" id="limite-monto" name="limite" inputmode="decimal" autocomplete="off"
+                       placeholder="Ej.: 100.000" aria-required="true"
+                       aria-describedby="ayuda-limite error-limite-monto">
+                <p class="campo__ayuda" id="ayuda-limite">
+                  Usá coma para los centavos. Si la categoría ya tiene un límite, se reemplaza.
+                </p>
+                <p class="campo__error" id="error-limite-monto" data-error="limite" hidden></p>
+              </div>
+
+              <div class="acciones">
+                <button type="submit" class="boton" data-boton-guardar-limite>Guardar límite</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="tarjeta" aria-labelledby="titulo-estado-mes">
+            <h3 id="titulo-estado-mes">Estado del mes</h3>
+
+            <form class="filtros" data-presupuestos-filtros aria-label="Mes de los presupuestos">
+              <div class="campo">
+                <label for="presupuestos-mes">Mes</label>
+                <select id="presupuestos-mes" name="mes"></select>
+              </div>
+            </form>
+
+            <p class="listado__estado" role="status" data-presupuestos-resumen></p>
+            <ul class="lista-presupuestos" data-presupuestos-lista></ul>
+            <p class="vista-pendiente" data-presupuestos-vacio hidden>Todavía no definiste ningún límite.</p>
+          </section>
+        </div>
+      </div>
     </section>
   </main>
 
