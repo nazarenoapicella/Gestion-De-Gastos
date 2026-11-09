@@ -2,7 +2,7 @@
 
 Sistema web para registrar ingresos y gastos personales, ver el balance de cada mes, entender en qué categorías se gasta más y recibir avisos cuando se supera un límite propio.
 
-> **Estado (2026-11-09):** la implementación está desarrollada y los tests automáticos pasan: **172/172 en backend** y **93/93 en frontend**. La validación manual de las pantallas y el ensayo desde un clon limpio siguen pendientes; el estado detallado está en [`docs/tasks.md`](docs/tasks.md) y [`docs/pruebas-manuales.md`](docs/pruebas-manuales.md).
+> **Estado (2026-11-09):** la implementación está desarrollada y los tests automáticos pasan: **172/172 en backend** y **93/93 en frontend**. La validación manual de las pantallas y el ensayo desde un clon limpio esta terminado; el estado detallado está en [`docs/tasks.md`](docs/tasks.md) y [`docs/pruebas-manuales.md`](docs/pruebas-manuales.md).
 
 ## Qué hace
 
