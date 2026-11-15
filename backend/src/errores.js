@@ -24,6 +24,16 @@ export function manejadorDeErrores(err, req, res, next) {
     });
   }
 
+  if (err.type === 'entity.too.large') {
+    return res.status(413).json({
+      error: {
+        codigo: 'CUERPO_DEMASIADO_GRANDE',
+        mensaje: 'La solicitud supera el tamaño máximo permitido.',
+        campos: {},
+      },
+    });
+  }
+
   if (err.type === 'entity.parse.failed') {
     return res.status(400).json({
       error: {

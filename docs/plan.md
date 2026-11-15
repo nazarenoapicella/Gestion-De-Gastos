@@ -184,3 +184,5 @@ Ninguna bloquea tareas. Se avanza con el supuesto indicado.
 ## Historial de cambios
 
 - [cambio] 2026-10-30 — Versión 1.0 del plan, a partir de `spec.md` v1.0.
+
+- [cambio] 2026-11-15 — Se agrega límite de 16 KiB para JSON, cabeceras de seguridad, `Cache-Control: no-store` en API y bloqueo de acceso HTTP a `/test/`.

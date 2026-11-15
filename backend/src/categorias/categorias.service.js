@@ -18,7 +18,7 @@ export function revisarNombre(nombre) {
   if (typeof nombre !== 'string') return { error: 'El nombre es obligatorio.' };
   const limpio = limpiarNombre(nombre);
   if (limpio.length === 0) return { error: 'El nombre es obligatorio.' };
-  if (limpio.length > LARGO_MAXIMO_NOMBRE) {
+  if (Array.from(limpio).length > LARGO_MAXIMO_NOMBRE) {
     return { error: `El nombre no puede superar los ${LARGO_MAXIMO_NOMBRE} caracteres.` };
   }
   return { valor: limpio };

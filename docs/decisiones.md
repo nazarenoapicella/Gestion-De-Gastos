@@ -59,3 +59,10 @@ Las preguntas cuya respuesta depende de la persona están en `preguntas-abiertas
 ## Historial de cambios
 
 - [cambio] 2026-10-30 — Versión inicial. Decisiones D-01 a D-21 ordenadas por tema para mayor claridad.
+
+
+## D-022 — Conteo de caracteres Unicode
+
+Los límites de longitud definidos como caracteres se cuentan en puntos de código Unicode (`Array.from` en JavaScript). Así, un emoji cuenta como un carácter, en coherencia con la descripción funcional. Backend y frontend aplican el mismo criterio.
+
+- [cambio] 2026-11-15 — Se fija el criterio uniforme de longitud Unicode para nombres de categoría.

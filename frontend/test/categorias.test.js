@@ -56,10 +56,10 @@ test('T-19.4 / RN-06: el largo se cuenta después de reducir los espacios', () =
   assert.equal(validarNombre('  ' + 'A'.repeat(30) + '  ').ok, true);
 });
 
-// Igual que el servidor, el largo se mide con .length: un emoji ocupa 2 unidades.
-test('T-19.5: el largo se mide como en el servidor (un emoji cuenta como 2)', () => {
-  assert.equal(validarNombre('😀'.repeat(15)).ok, true); // 30 unidades
-  assert.equal(validarNombre('😀'.repeat(16)).ok, false); // 32 unidades
+// RN-06: la longitud cuenta puntos de código Unicode; un emoji cuenta como un carácter.
+test('T-19.5 / RN-06: emojis cuentan como un carácter Unicode', () => {
+  assert.equal(validarNombre('😀'.repeat(30)).ok, true);
+  assert.equal(validarNombre('😀'.repeat(31)).ok, false);
 });
 
 test('T-19.6: agruparPorTipo separa gastos e ingresos, conserva el orden y no modifica la lista', () => {

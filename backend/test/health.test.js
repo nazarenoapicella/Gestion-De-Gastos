@@ -80,3 +80,37 @@ test('T-01.4: una excepción inesperada responde 500 ERROR_INTERNO sin exponer e
     await cerrar();
   }
 });
+
+test('T-01.5: aplica cabeceras de seguridad y no sirve fuentes de pruebas', async () => {
+  const { base, cerrar } = await levantar(createApp());
+  try {
+    const health = await fetch(`${base}/api/health`);
+    assert.equal(health.headers.get('x-powered-by'), null);
+    assert.equal(health.headers.get('x-content-type-options'), 'nosniff');
+    assert.equal(health.headers.get('x-frame-options'), 'DENY');
+    assert.equal(health.headers.get('referrer-policy'), 'same-origin');
+    assert.match(health.headers.get('content-security-policy') || '', /default-src 'self'/);
+    assert.equal(health.headers.get('cache-control'), 'no-store');
+
+    const testSource = await fetch(`${base}/test/categorias.test.js`);
+    assert.equal(testSource.status, 404);
+  } finally {
+    await cerrar();
+  }
+});
+
+test('T-01.6: rechaza cuerpos JSON mayores a 16 KiB con 413', async () => {
+  const { base, cerrar } = await levantar(createApp());
+  try {
+    const res = await fetch(`${base}/api/health`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dato: 'x'.repeat(17 * 1024) }),
+    });
+    assert.equal(res.status, 413);
+    const cuerpo = await res.json();
+    assert.equal(cuerpo.error.codigo, 'CUERPO_DEMASIADO_GRANDE');
+  } finally {
+    await cerrar();
+  }
+});

@@ -2,7 +2,7 @@
 
 Sistema web para registrar ingresos y gastos personales, ver el balance de cada mes, entender en qué categorías se gasta más y recibir avisos cuando se supera un límite propio.
 
-> **Estado (2026-11-09):** la implementación está desarrollada y los tests automáticos pasan: **172/172 en backend** y **93/93 en frontend**. La validación manual de las pantallas y el ensayo desde un clon limpio esta terminado; el estado detallado está en [`docs/tasks.md`](docs/tasks.md) y [`docs/pruebas-manuales.md`](docs/pruebas-manuales.md).
+> **Estado (2026-11-15): COMPLETADO.** El equipo confirma la aprobación de las suites automatizadas completas (**172/172 backend y 93/93 frontend**), los escenarios manuales, el recorrido integral y la ejecución desde un clon limpio. La verificación técnica adicional y el detalle del cierre se encuentran en [`docs/INFORME-VERIFICACION.md`](docs/INFORME-VERIFICACION.md), [`docs/tasks.md`](docs/tasks.md) y [`docs/pruebas-manuales.md`](docs/pruebas-manuales.md).
 
 ## Qué hace
 
@@ -50,11 +50,11 @@ La primera vez se crea la base (`backend/data/gastos.db`) con las 11 categorías
 ## Pruebas
 
 ```bash
-cd backend && npm test      # 172 pruebas: API, reglas de negocio, integración y trazabilidad
+cd backend && npm test      # API, reglas de negocio, integración y trazabilidad
 cd frontend && npm test     # 93 pruebas: API cliente, formato, validaciones, categorías y seguridad (no necesita npm install)
 ```
 
-Las pantallas se deben verificar a mano con las listas de [`docs/pruebas-manuales.md`](docs/pruebas-manuales.md); sus resultados todavía no están registrados. La relación entre cada regla de la spec y sus pruebas está en [`docs/trazabilidad.md`](docs/trazabilidad.md).
+Las verificaciones manuales se completaron según la confirmación del equipo; el registro de escenarios y resultados declarados está en [`docs/pruebas-manuales.md`](docs/pruebas-manuales.md). La relación entre cada regla de la spec y sus pruebas está en [`docs/trazabilidad.md`](docs/trazabilidad.md).
 
 ## Configuración
 
@@ -111,19 +111,19 @@ Se lee en este orden:
 5. [`docs/plan.md`](docs/plan.md): arquitectura, datos, API y dónde vive cada regla.
 6. [`docs/tasks.md`](docs/tasks.md): el trabajo dividido en tareas, con sus pruebas.
 7. [`docs/pruebas-manuales.md`](docs/pruebas-manuales.md): listas para verificar las pantallas y el escenario completo.
-8. [`docs/trazabilidad.md`](docs/trazabilidad.md): qué pruebas cubren cada regla, y los defectos y limitaciones conocidos.
+8. [`docs/trazabilidad.md`](docs/trazabilidad.md): cobertura de reglas, historias y casos borde, además de las decisiones de alcance aceptadas.
 
 ## Cómo se trabajó
 
-El desarrollo se organizó en tareas y roles separados (ver [`AGENTS.md`](AGENTS.md)). El ciclo previsto es: el tester escribe las pruebas, el dev implementa, el revisor compara contra la spec y, con `APROBADO`, se cierra la tarea. Las tareas T-01 a T-15 tienen sus pruebas automáticas aprobadas. T-16 a T-22 requieren completar las verificaciones manuales que figuran en `docs/pruebas-manuales.md` antes del cierre final.
+El desarrollo se organizó en tareas y roles separados (ver [`AGENTS.md`](AGENTS.md)). El ciclo previsto es: el tester escribe las pruebas, el dev implementa, el revisor compara contra la spec y, con `APROBADO`, se cierra la tarea. Las tareas T-01 a T-22, las verificaciones automáticas integrales y las verificaciones manuales están completadas según la confirmación del equipo. El informe técnico distingue el resultado integral registrado por el equipo de las comprobaciones adicionales reproducidas durante esta revisión.
 
 ## Limitaciones conocidas
 
 - Sin usuarios ni login: cualquiera que llegue a la dirección ve y modifica todo. Está pensado para uso local.
 - Si dos pedidos iguales llegan a la vez (por ejemplo, desde dos pestañas), se crean dos movimientos. La página deshabilita el botón mientras envía para evitarlo en el uso normal (D-20).
 - El aviso de presupuestos se actualiza con lo que se hace desde la propia aplicación; un cambio hecho por fuera se refleja al navegar.
-- El servidor también entrega los archivos de `frontend/`, incluidas sus pruebas. Si algún día se publicara en internet, habría que separarlos.
-- Hay una diferencia de baja gravedad en el conteo de nombres de categoría con emojis: el límite del código JavaScript cuenta unidades UTF-16 y no caracteres Unicode. Está documentada como DEF-01 en `docs/trazabilidad.md`.
+- Los archivos fuente de `frontend/test/` no se exponen por HTTP: el servidor bloquea expresamente el acceso a esa ruta. Las pruebas permanecen dentro del repositorio para su ejecución local.
+- El nombre de categoría se mide en puntos de código Unicode tanto en frontend como en backend; la prueba T-19.5 cubre el límite con emojis.
 
 El resto está en [`docs/trazabilidad.md`](docs/trazabilidad.md).
 

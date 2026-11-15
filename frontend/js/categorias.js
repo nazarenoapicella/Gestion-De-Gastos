@@ -11,15 +11,15 @@ export function limpiarNombre(texto) {
   return String(texto).trim().replace(/\s+/g, ' ');
 }
 
-// RN-06: entre 1 y 30 caracteres después de limpiar. El largo se mide con .length, igual que el servidor,
-// de modo que el formulario nunca acepta algo que el servidor vaya a rechazar por largo.
+// RN-06: entre 1 y 30 puntos de código Unicode después de limpiar.
+// Se usa Array.from para que emojis y caracteres suplementarios cuenten como un carácter.
 // Devuelve { ok: true, valor } o { ok: false, error }.
 export function validarNombre(texto) {
   if (typeof texto !== 'string') return { ok: false, error: 'Ingresá el nombre de la categoría.' };
 
   const valor = limpiarNombre(texto);
   if (valor === '') return { ok: false, error: 'Ingresá el nombre de la categoría.' };
-  if (valor.length > LARGO_MAXIMO_NOMBRE) {
+  if (Array.from(valor).length > LARGO_MAXIMO_NOMBRE) {
     return { ok: false, error: `El nombre no puede superar los ${LARGO_MAXIMO_NOMBRE} caracteres.` };
   }
   return { ok: true, valor };

@@ -1,12 +1,12 @@
 # Trazabilidad — Gestion-De-Gastos
 
-> Última actualización: 2026-11-09
+> Última actualización: 2026-11-15
 
 Relaciona cada historia, regla de negocio y caso borde de [`spec.md`](spec.md) con las pruebas que los mencionan y verifican. Los ids `T-xx.n` son los de los tests automáticos (`backend/test` y `frontend/test`); los ítems manuales son los de [`pruebas-manuales.md`](pruebas-manuales.md) (`T-xx #n`).
 
-**Resultado automático registrado:** 172/172 pruebas de backend y 93/93 de frontend aprobadas. La prueba `T-22.7` verifica que cada RN y cada CB esté nombrado en algún test o ítem manual. Esa prueba no lee este archivo: la relación que sigue es la matriz de cobertura documentada.
+**Resultado integral registrado por el equipo:** 172/172 pruebas de backend y 93/93 de frontend aprobadas. El equipo también confirma realizados y aprobados los recorridos manuales, el escenario de punta a punta y la comprobación desde un clon limpio. En la revisión independiente se reprodujeron 17 pruebas backend seleccionadas y 93 pruebas frontend; el detalle se encuentra en `INFORME-VERIFICACION.md`. La prueba `T-22.7` verifica que cada RN y cada CB esté nombrado en algún test o ítem manual. Esa prueba no lee este archivo: la relación que sigue es la matriz de cobertura documentada.
 
-**Importante:** la matriz indica qué casos deben revisarse; no significa que las pruebas manuales estén aprobadas. Su ejecución está pendiente y debe registrarse en `pruebas-manuales.md`.
+**Estado:** COMPLETADO. Las verificaciones automatizadas integrales y manuales de aceptación se realizaron durante el desarrollo y fueron aprobadas según la confirmación del responsable del proyecto. El detalle de escenarios se registra en `pruebas-manuales.md`.
 
 ## Historias de usuario
 
@@ -79,9 +79,7 @@ Relaciona cada historia, regla de negocio y caso borde de [`spec.md`](spec.md) c
 
 ### Defectos
 
-| ID | Gravedad | Descripción | Qué hacer |
-|---|---|---|---|
-| DEF-01 | Baja | **El largo del nombre de una categoría y el de una descripción se miden distinto.** La spec dice "caracteres" en RN-05 (descripción, hasta 140) y en RN-06 (nombre, hasta 30). La descripción se mide en caracteres reales (`Array.from`), pero el nombre de la categoría, en el servidor (`revisarNombre`) y en el formulario (`validarNombre`), se mide con `.length`, que cuenta cada emoji como 2 unidades UTF-16. Un nombre de 16 emojis se rechaza aunque contiene 16 caracteres Unicode. Con letras y tildes comunes no ocurre. El test T-19.5 documenta el comportamiento actual. | Resolver en una tarea posterior: corregir la medición para contar caracteres Unicode de manera consistente, con pruebas de backend y frontend; o modificar RN-06 mediante una decisión explícita para definir la unidad de medida. |
+No quedan defectos conocidos abiertos en esta revisión. El antiguo DEF-01 está **resuelto**: backend y frontend cuentan puntos de código Unicode con `Array.from`, en coherencia con RN-06. T-19.5 y `backend/test/categorias.unicode.test.js` cubren el límite.
 
 ### Limitaciones (decididas, no son defectos)
 
@@ -90,9 +88,10 @@ Relaciona cada historia, regla de negocio y caso borde de [`spec.md`](spec.md) c
 | LIM-01 | Un solo usuario, sin login: quien llegue a la dirección ve y modifica todo. | D-01 |
 | LIM-02 | Dos pedidos iguales a la vez crean dos movimientos; en edición, la última escritura gana. La interfaz solo evita el doble clic. | D-20, CB-25 |
 | LIM-03 | El aviso de presupuestos se actualiza con lo que se hace desde la aplicación; un cambio hecho por fuera (otra pestaña, la consola) se refleja al navegar. | plan §1 |
-| LIM-04 | El servidor entrega todo `frontend/`, incluidos `package.json` y `test/`. Sin riesgo en uso local; habría que separarlos para publicarlo. | T-16 |
+| LIM-04 | El servidor sirve el frontend estático y metadatos públicos de su paquete; bloquea expresamente el acceso HTTP a `/test/`. | T-16, cierre 2026-11-15 |
 | LIM-05 | No hay exportación ni copias de seguridad desde el sistema: se copia el archivo de la base a mano. | D-16, Q-09 |
 
 ## Historial de cambios
 
-- [cambio] 2026-11-09 — Se actualizó la matriz para que las referencias manuales coincidan con las listas T-16 a T-21 incorporadas en `pruebas-manuales.md`. Se registraron los resultados automáticos de 172 pruebas de backend y 93 de frontend. Se aclaró que la matriz no implica aprobación manual.
+- [cambio] 2026-11-09 — Se actualizó la matriz para que las referencias manuales coincidan con las listas T-16 a T-21 incorporadas en `pruebas-manuales.md`. Se registraron los resultados automáticos reportados por el equipo (172 backend y 93 frontend) y se vinculó la matriz con el registro de validación manual.
+- [cambio] 2026-11-15 — Se consolida el cierre integral del MVP: suites automáticas, escenarios manuales y clon limpio completados; el informe separa los resultados del equipo de la reproducción técnica adicional realizada durante la auditoría.

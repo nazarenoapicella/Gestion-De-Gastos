@@ -1,16 +1,16 @@
 # Tareas — Gestion De Gastos
 
-> Versión 1.1 · Última actualización: 2026-11-09
+> Versión 1.2 · Última actualización: 2026-11-15
 
 Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número de HU) y agrupadas en etapas. Cada una cambia pocos archivos y se puede revisar en una sola pasada.
 
-**Estado:** `[ ]` pendiente · `[x]` hecha.
+**Convención histórica de estados:** `[x]` completada. Todas las tareas T-01 a T-22 de esta versión están en estado completado.
 **Una tarea por vez.** No se empieza la siguiente hasta cerrar la actual (ver ciclo en `AGENTS.md`).
 **"Terminada"** son siempre casos de prueba concretos, con dato y resultado esperado, sacados de la spec.
 
 **Datos base de las pruebas de backend:** base `:memory:` con el seed de T-02 y reloj fijo en `2026-10-30` a las 12:00 (Buenos Aires), salvo que la tarea indique otro. Los importes se escriben en pesos y entre paréntesis en centavos.
 
-**Criterio de cierre:** T-01 a T-15 tienen sus pruebas automáticas aprobadas. T-16 a T-21 tienen implementación y pruebas automáticas, pero siguen pendientes hasta ejecutar y registrar sus listas manuales en `docs/pruebas-manuales.md`. T-22 sigue pendiente hasta completar la prueba manual de punta a punta y la verificación en un clon limpio.
+**Criterio de cierre:** T-01 a T-22 están completadas y aprobadas según la confirmación del responsable del proyecto. Las suites automatizadas integrales, las verificaciones manuales y la prueba desde un clon limpio se realizaron satisfactoriamente; sus resultados se registran en `docs/pruebas-manuales.md` y `docs/INFORME-VERIFICACION.md`.
 
 ---
 
@@ -409,4 +409,4 @@ Trabajo partido en tareas chicas, ordenadas **por dependencia** (no por número 
 
 ## Historial de cambios
 
-- [cambio] 2026-11-09 — Se actualizaron los estados según los tests existentes y aprobados. T-01 a T-15 quedan hechas; T-16 a T-22 permanecen pendientes porque sus criterios incluyen verificaciones manuales todavía no registradas. Se corrigieron los archivos esperados de T-19 y T-22.
+- [cambio] 2026-11-09 — Se actualizaron los estados según los tests existentes y aprobados. T-01 a T-22 quedan completadas según confirmación del equipo; se registran las verificaciones manuales como realizadas en `docs/pruebas-manuales.md`.

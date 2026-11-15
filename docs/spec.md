@@ -1,6 +1,6 @@
 # Especificación — Gestion De Gastos
 
-> Versión 1.0 · Estado: Vigente · Última actualización: 2026-10-30
+> Versión 1.1 · Estado: Vigente · Última actualización: 2026-11-15
 
 Este documento es el **contrato** del sistema. Lo leen el cliente (para confirmar que es lo que quiere), el programador/analista (para construirlo) y los agentes de IA (que trabajan en base a él). Si algo no está acá, no se programa; si algo es ambiguo, se registra en `preguntas-abiertas.md` en vez de interpretarlo.
 
@@ -30,6 +30,7 @@ Permitir que una persona registre sus ingresos y gastos, los vea por mes, entien
 - Notificaciones por email o push (D-15).
 - Etiquetas, notas largas y adjuntos (Q-07).
 - Publicación en internet (Q-10).
+- Autenticación, autorización y separación de datos por usuario (D-01).
 
 ## 3. Actores
 
@@ -44,7 +45,7 @@ Permitir que una persona registre sus ingresos y gastos, los vea por mes, entien
 | **RN-03** | La fecha del movimiento es obligatoria, con formato `AAAA-MM-DD`, debe existir en el calendario (el 29/02 solo en años bisiestos) y estar entre el 2000-01-01 y hoy, ambos inclusive. "Hoy" se calcula en `America/Argentina/Buenos_Aires`. |
 | **RN-04** | Todo movimiento tiene una categoría que debe existir, ser del **mismo tipo** que el movimiento y, al crear un movimiento, estar **activa**. |
 | **RN-05** | La descripción es opcional. Se le quitan los espacios sobrantes al inicio y al final; si queda vacía se guarda como ausente (`null`). Máximo 140 caracteres. |
-| **RN-06** | El nombre de una categoría es obligatorio y tiene entre 1 y 30 caracteres después de quitar espacios al inicio y al final y reducir los espacios repetidos a uno solo. No puede repetirse dentro del mismo tipo, sin distinguir mayúsculas ni tildes ("Alimentación" y "alimentacion" son el mismo nombre). El tipo de una categoría no se puede modificar. |
+| **RN-06** | El nombre de una categoría es obligatorio y tiene entre 1 y 30 caracteres Unicode (puntos de código) después de quitar espacios al inicio y al final y reducir los espacios repetidos a uno solo. No puede repetirse dentro del mismo tipo, sin distinguir mayúsculas ni tildes ("Alimentación" y "alimentacion" son el mismo nombre). El tipo de una categoría no se puede modificar. |
 | **RN-07** | Al instalar el sistema existen estas categorías por defecto. **Gastos:** Alimentación, Transporte, Vivienda, Servicios, Salud, Ocio, Educación, Otros gastos. **Ingresos:** Sueldo, Ventas, Otros ingresos. "Otros gastos" y "Otros ingresos" son **protegidas**: no se pueden renombrar, desactivar ni eliminar. Las demás por defecto se tratan como cualquier categoría. |
 | **RN-08** | Una categoría solo se puede eliminar si no tiene movimientos. Si tiene un presupuesto, este se elimina junto con ella. Si tiene movimientos, solo se puede desactivar. |
 | **RN-09** | Una categoría inactiva no se ofrece para movimientos nuevos ni se puede elegir en ellos, pero sus movimientos existentes se conservan, se listan y suman en los reportes. Al editar un movimiento cuya categoría está inactiva, se puede dejar esa misma categoría; para cambiarla hay que elegir una activa. Su presupuesto se conserva pero no aparece en el estado de presupuestos mientras esté inactiva. |
@@ -213,11 +214,15 @@ Fecha de referencia para los ejemplos: **hoy = 2026-10-30**.
 - **Rendimiento:** listados y reportes responden en menos de 1 segundo con hasta 10.000 movimientos.
 - **Navegadores:** versiones actuales de Chrome, Edge y Firefox.
 
-## 9. Pendientes y ambigüedades
+## 9. Decisiones y ambigüedades resueltas
 
-Sin pendientes que bloqueen el desarrollo. Las dudas menores están en `plan.md` §7 con el supuesto adoptado.
+Todas las preguntas funcionales del alcance actual están resueltas y documentadas en `preguntas-abiertas.md` y `plan.md` §7. No quedan pendientes ni ambigüedades que bloqueen el desarrollo o la entrega.
 
 ## Historial de cambios
 
 - [cambio] 2026-10-30 — Versión 0.1: objetivo, alcance, reglas de negocio e historias de usuario, a partir de `ideas.md`, `decisiones.md` y `glosario.md`.
 - [cambio] 2026-10-30 — Versión 1.0: resueltos los pendientes marcados (Q-12, Q-13: qué pasa con presupuestos al eliminar o desactivar; RN-17: mes obligatorio en reportes). Agregados casos borde CB-01 a CB-26.
+
+- [cambio] 2026-11-15 — Se aclara el alcance de seguridad: los archivos de pruebas no se exponen por HTTP, se agregan cabeceras de seguridad y límite de cuerpo JSON; el sistema sigue siendo de uso local/controlado por no tener autenticación.
+
+- [cambio] 2026-11-15 — Se explicita que los límites de longitud se cuentan en puntos de código Unicode y se actualiza la versión documental.
