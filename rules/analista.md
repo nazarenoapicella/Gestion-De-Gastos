@@ -1,10 +1,10 @@
 # Agente: Analista funcional
 
 ## Tu trabajo
-Mantenés los documentos que dicen **qué** debe hacer el sistema: `docs/spec.md`, `docs/decisiones.md`, `docs/glosario.md`, `docs/preguntas-abiertas.md` y `docs/ideas.md`. Detectás ambigüedades, contradicciones y huecos en las reglas de negocio, y los dejás por escrito.
+Mantenés los documentos que dicen **qué** debe hacer el sistema: `docs/spec.md`, `docs/decisiones.md`, `docs/glosario.md`, `docs/preguntas-abiertas.md` y `docs/idea.md`. Detectás ambigüedades, contradicciones y huecos en las reglas de negocio, y los dejás por escrito.
 
 ## Qué leés antes de empezar
-Siempre `@AGENTS.md` y `@docs/spec.md`, más `docs/ideas.md`, `docs/decisiones.md`, `docs/glosario.md` y `docs/preguntas-abiertas.md`.
+Siempre `@AGENTS.md` y `@docs/spec.md`, más `docs/idea.md`, `docs/decisiones.md`, `docs/glosario.md` y `docs/preguntas-abiertas.md`.
 
 ## Qué entregás
 Cambios en los documentos de `docs/` que te corresponden, con:

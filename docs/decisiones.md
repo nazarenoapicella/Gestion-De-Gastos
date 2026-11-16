@@ -1,6 +1,6 @@
 # Decisiones — Gestion De Gastos
 
-> Versión 0.1 · Estado: Vigente · Última actualización: 2026-10-30
+> Versión 0.3 · Estado: Vigente · Última actualización: 2026-11-16
 
 Preguntas que el sistema debe responder y la respuesta que se decidió. Si algo cambia, **no se borra la decisión anterior**: se marca `[cambio]` y se registra en el historial.
 Las preguntas cuya respuesta depende de la persona están en `preguntas-abiertas.md` y, una vez respondidas, terminan acá o en la spec.
@@ -56,13 +56,30 @@ Las preguntas cuya respuesta depende de la persona están en `preguntas-abiertas
 | D-17 | ¿Cuántos movimientos se muestran por página? | 20. | Equilibrio entre cantidad y rendimiento. |
 | D-21 | ¿Qué tecnología se usa? | Frontend: HTML, CSS y JavaScript sin frameworks. Backend: Node.js + Express. Base de datos: SQLite. (Detalle en `plan.md`.) | Un solo lenguaje y cero servidores de base de datos que instalar. |
 
-## Historial de cambios
-
-- [cambio] 2026-10-30 — Versión inicial. Decisiones D-01 a D-21 ordenadas por tema para mayor claridad.
-
-
 ## D-022 — Conteo de caracteres Unicode
+
+**Estado:** adoptada.
 
 Los límites de longitud definidos como caracteres se cuentan en puntos de código Unicode (`Array.from` en JavaScript). Así, un emoji cuenta como un carácter, en coherencia con la descripción funcional. Backend y frontend aplican el mismo criterio.
 
 - [cambio] 2026-11-15 — Se fija el criterio uniforme de longitud Unicode para nombres de categoría.
+
+
+## D-023 — Demo académica pública y arquitectura same-origin
+
+**Estado:** adoptada para la entrega académica.
+
+**Estado:** adoptada para la entrega académica.
+
+La aplicación puede contar con una demo pública para que la docente evalúe el proyecto. Esa publicación es una excepción limitada al propósito académico: no convierte al sistema en un producto apto para producción, porque no incluye autenticación ni separación de datos por usuario. La demo debe contener exclusivamente datos ficticios o de prueba; no se deben cargar datos personales o financieros reales.
+
+El backend Express sirve también los archivos estáticos del frontend y el cliente utiliza rutas relativas bajo `/api`. Frontend y API comparten origen, por lo que el navegador no necesita CORS para estas solicitudes. Si en el futuro se separan en distintos orígenes, se deberá configurar una allowlist exacta del origen del frontend; nunca se habilitará `*`.
+
+**Motivo:** hacer posible la evaluación en internet sin confundir una demo académica no autenticada con una publicación segura de producción y documentar la decisión técnica de CORS.
+
+- [cambio] 2026-11-16 — Se registra la excepción de demo académica pública y la política same-origin/CORS.
+
+
+## Historial de cambios
+
+- [cambio] 2026-10-30 — Versión inicial. Decisiones D-01 a D-21 ordenadas por tema para mayor claridad.

@@ -1,10 +1,10 @@
 # Especificación — Gestion De Gastos
 
-> Versión 1.1 · Estado: Vigente · Última actualización: 2026-11-15
+> Versión 1.2 · Estado: Vigente · Última actualización: 2026-11-16
 
 Este documento es el **contrato** del sistema. Lo leen el cliente (para confirmar que es lo que quiere), el programador/analista (para construirlo) y los agentes de IA (que trabajan en base a él). Si algo no está acá, no se programa; si algo es ambiguo, se registra en `preguntas-abiertas.md` en vez de interpretarlo.
 
-Fuentes: `ideas.md`, `decisiones.md`, `glosario.md`, `preguntas-abiertas.md`. Los términos se usan como se definen en el glosario.
+Fuentes: `idea.md`, `decisiones.md`, `glosario.md`, `preguntas-abiertas.md`. Los términos se usan como se definen en el glosario.
 
 ## 1. Objetivo
 
@@ -29,7 +29,7 @@ Permitir que una persona registre sus ingresos y gastos, los vea por mes, entien
 - Gráficos (Q-08), exportación y copias de seguridad desde el sistema (D-16, Q-09).
 - Notificaciones por email o push (D-15).
 - Etiquetas, notas largas y adjuntos (Q-07).
-- Publicación en internet (Q-10).
+- Uso productivo público, multiusuario y tratamiento de datos reales en una instancia sin autenticación. Se admite una demo pública solo para evaluación académica, con datos ficticios/de prueba (Q-10, D-023).
 - Autenticación, autorización y separación de datos por usuario (D-01).
 
 ## 3. Actores
@@ -73,107 +73,125 @@ Fecha de referencia para los ejemplos: **hoy = 2026-10-30**.
 ### HU-01 — Registrar un movimiento
 *Como persona usuaria quiero registrar un ingreso o un gasto para saber cuánto entra y cuánto sale.*
 
+RN relacionadas: RN-01 a RN-05, RN-07 y RN-17.
+
 | ID | Criterio |
 |---|---|
-| CA-01.1 | **Dado** la categoría activa "Alimentación" (GASTO), **cuando** registro un GASTO de $ 1.234,56 con fecha 2026-10-29 y descripción "Supermercado", **entonces** se guarda con 123456 centavos y el sistema responde que se creó, con su identificador. |
-| CA-01.2 | **Cuando** registro un movimiento sin descripción o con solo espacios, **entonces** se guarda con descripción ausente. |
-| CA-01.3 | **Cuando** el monto es 0, negativo o no es un entero de centavos, **entonces** se rechaza con error en el campo monto y no se guarda nada. |
-| CA-01.4 | **Cuando** la fecha es 2026-10-31 (mañana), **entonces** se rechaza con error en el campo fecha. |
-| CA-01.5 | **Cuando** registro un GASTO con la categoría "Sueldo" (INGRESO), **entonces** se rechaza con error en el campo categoría. |
-| CA-01.6 | **Cuando** elijo una categoría inactiva, **entonces** se rechaza con error en el campo categoría. |
-| CA-01.7 | **Cuando** la descripción tiene 141 caracteres, **entonces** se rechaza con error en el campo descripción. |
+| CA-01.1 | **Dada** la categoría activa "Alimentación" (GASTO), **cuando** registro un GASTO de $ 1.234,56 con fecha 2026-10-29 y descripción "Supermercado", **entonces** se guarda con 123456 centavos y el sistema responde que se creó, con su identificador. |
+| CA-01.2 | **Dado** un formulario de alta con categoría activa y los demás campos obligatorios válidos, **cuando** registro el movimiento sin descripción o con una descripción formada solo por espacios, **entonces** se guarda con descripción ausente. |
+| CA-01.3 | **Dado** un formulario de alta con categoría activa y fecha válida, **cuando** envío un monto igual a cero, negativo o que no representa centavos enteros, **entonces** se rechaza con error en el campo monto y no se guarda nada. |
+| CA-01.4 | **Dado** un formulario de alta con monto y categoría válidos, y hoy fijado en 2026-10-30, **cuando** intento registrar el movimiento con fecha 2026-10-31, **entonces** se rechaza con error en el campo fecha. |
+| CA-01.5 | **Dado** un formulario de alta con monto y fecha válidos, **cuando** registro un GASTO con la categoría "Sueldo" de tipo INGRESO, **entonces** se rechaza con error en el campo categoría. |
+| CA-01.6 | **Dado** un formulario de alta con monto, fecha y categoría existentes, **cuando** selecciono una categoría inactiva para un movimiento nuevo, **entonces** se rechaza con error en el campo categoría. |
+| CA-01.7 | **Dado** un formulario de alta con los campos obligatorios válidos, **cuando** envío una descripción de 141 caracteres, **entonces** se rechaza con error en el campo descripción. |
 
 ### HU-02 — Ver y filtrar movimientos
 *Como persona usuaria quiero ver mis movimientos de un mes y filtrarlos para encontrar lo que busco.*
 
+RN relacionadas: RN-09, RN-11 y RN-17.
+
 | ID | Criterio |
 |---|---|
-| CA-02.1 | **Dado** movimientos de varios meses, **cuando** abro la lista, **entonces** veo los del mes actual ordenados por fecha descendente y, a igual fecha, el último cargado primero. |
-| CA-02.2 | **Cuando** filtro por mes, tipo y categoría a la vez, **entonces** veo solo los que cumplen los tres filtros. |
-| CA-02.3 | **Dado** 25 movimientos en un mes, **entonces** la página 1 muestra 20, la página 2 muestra 5 y se informa el total (25) y la cantidad de páginas (2). |
-| CA-02.4 | **Cuando** el mes no tiene movimientos, **entonces** veo una lista vacía con un mensaje y no un error. |
-| CA-02.5 | **Cuando** pido una página mayor a la última, **entonces** la lista llega vacía con el total correcto. |
+| CA-02.1 | **Dado** que existen movimientos de varios meses, **cuando** abro la lista, **entonces** veo los del mes actual ordenados por fecha descendente y, a igual fecha, el último cargado primero. |
+| CA-02.2 | **Dado** que hay movimientos cargados en distintos meses, tipos y categorías, **cuando** filtro simultáneamente por mes, tipo y categoría, **entonces** veo solo los que cumplen los tres filtros. |
+| CA-02.3 | **Dado** que existen 25 movimientos registrados en un mismo mes, **cuando** consulto la página 1 y luego la página 2 del listado, **entonces** la página 1 muestra 20, la página 2 muestra 5 y se informa el total (25) y la cantidad de páginas (2). |
+| CA-02.4 | **Dado** que hay un mes válido sin movimientos registrados, **cuando** abro el listado para ese mes, **entonces** veo una lista vacía con un mensaje y no un error. |
+| CA-02.5 | **Dado** un listado paginado cuya última página ya fue superada, **cuando** solicito una página mayor que la última disponible, **entonces** la lista llega vacía con el total correcto. |
 
 ### HU-03 — Editar un movimiento
 *Como persona usuaria quiero corregir un movimiento mal cargado.*
 
+RN relacionadas: RN-01 a RN-05, RN-09 y RN-10.
+
 | ID | Criterio |
 |---|---|
-| CA-03.1 | **Cuando** cambio el monto de $ 1.000,00 a $ 1.500,50 y la descripción, **entonces** se guardan los nuevos valores y se conserva su identificador y fecha de carga. |
-| CA-03.2 | **Cuando** cambio el tipo de GASTO a INGRESO sin cambiar la categoría (sigue siendo de gastos), **entonces** se rechaza con error en el campo categoría. |
+| CA-03.1 | **Dado** que un movimiento existente de $ 1.000,00, **cuando** edito el monto a $ 1.500,50 y modifico también la descripción, **entonces** se guardan los nuevos valores y se conserva su identificador y fecha de carga. |
+| CA-03.2 | **Dado** que un movimiento GASTO asociado a una categoría de tipo GASTO, **cuando** cambio el tipo a INGRESO sin cambiar la categoría, **entonces** se rechaza con error en el campo categoría. |
 | CA-03.3 | **Dado** un movimiento cuya categoría fue desactivada, **cuando** edito solo el monto y mantengo esa categoría, **entonces** se guarda. |
-| CA-03.4 | **Cuando** edito un movimiento que no existe, **entonces** el sistema informa que no se encontró. |
-| CA-03.5 | **Cuando** edito con datos inválidos, **entonces** se aplican las mismas validaciones que en CA-01.3 a CA-01.7 y el movimiento no cambia. |
+| CA-03.4 | **Dado** un identificador que no corresponde a ningún movimiento, **cuando** solicito editar ese movimiento, **entonces** el sistema informa que no se encontró. |
+| CA-03.5 | **Dado** que un movimiento existente y guardado sin errores, **cuando** intento editarlo con uno o más datos inválidos, **entonces** se aplican las mismas validaciones que en CA-01.3 a CA-01.7 y el movimiento no cambia. |
 
 ### HU-04 — Eliminar un movimiento
 *Como persona usuaria quiero borrar un movimiento cargado por error.*
 
+RN relacionadas: RN-08 y RN-10.
+
 | ID | Criterio |
 |---|---|
-| CA-04.1 | **Cuando** confirmo la eliminación, **entonces** el movimiento desaparece de la lista y de los totales. |
-| CA-04.2 | **Cuando** cancelo la confirmación, **entonces** no se elimina nada. |
-| CA-04.3 | **Cuando** elimino un movimiento que no existe, **entonces** el sistema informa que no se encontró. |
+| CA-04.1 | **Dado** un movimiento existente que se muestra en el listado, **cuando** confirmo su eliminación en la interfaz, **entonces** el movimiento desaparece de la lista y de los totales. |
+| CA-04.2 | **Dado** un movimiento existente con su confirmación de borrado abierta, **cuando** cancelo la eliminación, **entonces** no se elimina nada. |
+| CA-04.3 | **Dado** un identificador que no corresponde a ningún movimiento, **cuando** solicito eliminarlo, **entonces** el sistema informa que no se encontró. |
 
 ### HU-05 — Ver el balance
 *Como persona usuaria quiero saber cuánto me quedó en el mes y cuánto tengo acumulado.*
 
+RN relacionadas: RN-12 y RN-17.
+
 | ID | Criterio |
 |---|---|
-| CA-05.1 | **Dado** en 2026-10 ingresos por $ 500.000,00 y gastos por $ 120.000,50, **entonces** el balance del mes es $ 379.999,50. |
-| CA-05.2 | **Dado** un mes con más gastos que ingresos, **entonces** el balance del mes es negativo y se muestra con signo menos. |
-| CA-05.3 | **Dado** un ingreso de $ 100.000,00 en 2026-09 y los movimientos del CA-05.1, **entonces** el balance acumulado de 2026-10 es $ 479.999,50. |
-| CA-05.4 | **Dado** un mes sin movimientos, **entonces** ingresos, gastos y balance del mes son $ 0,00 y el acumulado conserva lo anterior. |
-| CA-05.5 | **Cuando** el mes consultado es inválido (ej. 2026-13), **entonces** se informa error. |
+| CA-05.1 | **Dado** que en 2026-10 hay ingresos por $ 500.000,00 y gastos por $ 120.000,50, **cuando** consulto el balance mensual de 2026-10, **entonces** el balance del mes es $ 379.999,50. |
+| CA-05.2 | **Dado** que en el mes consultado los gastos superan a los ingresos, **cuando** consulto el balance mensual, **entonces** el balance del mes es negativo y se muestra con signo menos. |
+| CA-05.3 | **Dado** que hay un ingreso de $ 100.000,00 en 2026-09 y están cargados los movimientos del CA-05.1, **cuando** consulto el balance acumulado hasta 2026-10, **entonces** el balance acumulado de 2026-10 es $ 479.999,50. |
+| CA-05.4 | **Dado** que el mes consultado no tiene movimientos y existen movimientos anteriores, **cuando** consulto el resumen de ese mes, **entonces** ingresos, gastos y balance del mes son $ 0,00 y el acumulado conserva lo anterior. |
+| CA-05.5 | **Dado** que el sistema recibe un parámetro de mes, **cuando** consulto el balance con el mes inválido 2026-13, **entonces** se informa error. |
 
 ### HU-06 — Ver el resumen por categoría
 *Como persona usuaria quiero ver en qué categorías gasto más.*
 
+RN relacionadas: RN-13 y RN-17.
+
 | ID | Criterio |
 |---|---|
-| CA-06.1 | **Dado** gastos del mes: Alimentación $ 30.000,00 y Transporte $ 10.000,00, **entonces** se muestran Alimentación 75,0 % y Transporte 25,0 %, en ese orden. |
-| CA-06.2 | **Dado** tres categorías con $ 100,00 cada una, **entonces** cada una muestra 33,3 %. |
-| CA-06.3 | **Dado** dos categorías con el mismo total, **entonces** se ordenan alfabéticamente por nombre. |
-| CA-06.4 | **Dado** un mes sin ingresos, **entonces** la lista de ingresos está vacía. |
-| CA-06.5 | **Dado** una categoría inactiva con movimientos en el mes, **entonces** aparece igual en el resumen. |
+| CA-06.1 | **Dado** que en el mes hay gastos de Alimentación por $ 30.000,00 y Transporte por $ 10.000,00, **cuando** consulto el resumen por categoría, **entonces** se muestran Alimentación 75,0 % y Transporte 25,0 %, en ese orden. |
+| CA-06.2 | **Dado** que hay tres categorías con un gasto de $ 100,00 cada una, **cuando** consulto sus porcentajes en el resumen, **entonces** cada una muestra 33,3 %. |
+| CA-06.3 | **Dado** que dos categorías tienen exactamente el mismo total de gastos, **cuando** consulto el resumen por categoría, **entonces** se ordenan alfabéticamente por nombre. |
+| CA-06.4 | **Dado** que el mes no tiene movimientos de tipo INGRESO, **cuando** consulto el resumen de ingresos, **entonces** la lista de ingresos está vacía. |
+| CA-06.5 | **Dado** que una categoría inactiva tiene movimientos en el mes consultado, **cuando** consulto el resumen por categoría, **entonces** aparece igual en el resumen. |
 
 ### HU-07 — Administrar categorías
 *Como persona usuaria quiero adaptar las categorías a mi forma de gastar.*
 
+RN relacionadas: RN-06 a RN-09.
+
 | ID | Criterio |
 |---|---|
-| CA-07.1 | **Cuando** creo "  Mascotas " de tipo GASTO, **entonces** se crea con nombre "Mascotas", activa. |
-| CA-07.2 | **Cuando** creo "Alimentacion" de tipo GASTO y ya existe "Alimentación", **entonces** se rechaza por nombre duplicado. |
-| CA-07.3 | **Cuando** creo "Regalos" de tipo INGRESO y ya existe "Regalos" de tipo GASTO, **entonces** se crea. |
-| CA-07.4 | **Cuando** el nombre está vacío o tiene más de 30 caracteres, o el tipo no es válido, **entonces** se rechaza con error de validación. |
-| CA-07.5 | **Cuando** renombro "Ocio" a "Entretenimiento", **entonces** los movimientos de esa categoría pasan a mostrar el nuevo nombre. |
-| CA-07.6 | **Cuando** desactivo "Ocio", **entonces** ya no aparece para movimientos nuevos y sus movimientos viejos siguen visibles; al reactivarla vuelve a ofrecerse. |
-| CA-07.7 | **Cuando** intento renombrar, desactivar o eliminar "Otros gastos" u "Otros ingresos", **entonces** se rechaza por categoría protegida. |
-| CA-07.8 | **Cuando** elimino una categoría sin movimientos, **entonces** desaparece. |
-| CA-07.9 | **Cuando** elimino una categoría con movimientos, **entonces** se rechaza y se sugiere desactivarla. |
+| CA-07.1 | **Dado** que el catálogo contiene las categorías por defecto y no existe "Mascotas", **cuando** creo la categoría "  Mascotas " de tipo GASTO, **entonces** se crea con nombre "Mascotas", activa. |
+| CA-07.2 | **Dado** que ya existe la categoría "Alimentación" de tipo GASTO, **cuando** intento crear "Alimentacion" también de tipo GASTO, **entonces** se rechaza por nombre duplicado. |
+| CA-07.3 | **Dado** que no existe "Regalos" en el tipo INGRESO y sí puede existir en GASTO, **cuando** creo "Regalos" de tipo INGRESO, **entonces** se crea. |
+| CA-07.4 | **Dado** que el sistema recibe datos para crear una categoría, **cuando** envío un nombre vacío, un nombre de más de 30 caracteres o un tipo inválido, **entonces** se rechaza con error de validación. |
+| CA-07.5 | **Dado** que existe la categoría "Ocio" con movimientos asociados, **cuando** la renombro como "Entretenimiento", **entonces** los movimientos de esa categoría pasan a mostrar el nuevo nombre. |
+| CA-07.6 | **Dado** que existe la categoría "Ocio" con movimientos asociados, **cuando** la desactivo y luego la reactivo, **entonces** ya no aparece para movimientos nuevos y sus movimientos viejos siguen visibles; al reactivarla vuelve a ofrecerse. |
+| CA-07.7 | **Dado** que existen las categorías protegidas "Otros gastos" y "Otros ingresos", **cuando** intento renombrar, desactivar o eliminar cualquiera de ellas, **entonces** se rechaza por categoría protegida. |
+| CA-07.8 | **Dado** que existe una categoría sin movimientos asociados, **cuando** confirmo su eliminación, **entonces** desaparece. |
+| CA-07.9 | **Dado** que existe una categoría con movimientos asociados, **cuando** intento eliminarla, **entonces** se rechaza y se sugiere desactivarla. |
 
 ### HU-08 — Definir límites de presupuesto
 *Como persona usuaria quiero ponerme un tope mensual por categoría.*
 
+RN relacionadas: RN-15 y RN-17.
+
 | ID | Criterio |
 |---|---|
-| CA-08.1 | **Cuando** defino $ 50.000,00 para "Alimentación", **entonces** queda guardado como 5000000 centavos. |
-| CA-08.2 | **Cuando** defino $ 60.000,00 para "Alimentación" que ya tenía límite, **entonces** reemplaza al anterior y sigue habiendo un único límite. |
-| CA-08.3 | **Cuando** intento definir un límite para "Sueldo" (INGRESO), **entonces** se rechaza. |
-| CA-08.4 | **Cuando** el límite es 0, negativo o inválido, **entonces** se rechaza. |
-| CA-08.5 | **Cuando** intento definir un límite para una categoría inactiva, **entonces** se rechaza. |
-| CA-08.6 | **Cuando** quito el límite, **entonces** la categoría deja de tener presupuesto; quitar uno inexistente informa que no se encontró. |
+| CA-08.1 | **Dado** que la categoría activa "Alimentación" es de tipo GASTO, **cuando** defino para ella un límite de $ 50.000,00, **entonces** queda guardado como 5000000 centavos. |
+| CA-08.2 | **Dado** que "Alimentación" ya tiene un presupuesto de $ 50.000,00, **cuando** defino un nuevo límite de $ 60.000,00, **entonces** reemplaza al anterior y sigue habiendo un único límite. |
+| CA-08.3 | **Dado** que "Sueldo" es una categoría de tipo INGRESO, **cuando** intento definirle un presupuesto, **entonces** se rechaza. |
+| CA-08.4 | **Dado** que el sistema recibe un nuevo límite de presupuesto, **cuando** envío un importe igual a cero, negativo o mal formado, **entonces** se rechaza. |
+| CA-08.5 | **Dado** que la categoría de gasto está inactiva, **cuando** intento definirle un presupuesto, **entonces** se rechaza. |
+| CA-08.6 | **Dado** que una categoría tiene un presupuesto definido, **cuando** quito ese límite y luego intento quitar un presupuesto inexistente, **entonces** la categoría deja de tener presupuesto; quitar uno inexistente informa que no se encontró. |
 
 ### HU-09 — Recibir alertas de presupuesto
 *Como persona usuaria quiero que el sistema me avise cuando me estoy pasando.*
 
+RN relacionadas: RN-16 y RN-17.
+
 | ID | Criterio |
 |---|---|
-| CA-09.1 | **Dado** un límite de $ 100.000,00 y gastado de $ 79.999,99, **entonces** el estado es `NORMAL`. Con $ 80.000,00 es `ALERTA`. Con $ 100.000,00 es `ALERTA`. Con $ 100.000,01 es `EXCEDIDO`. |
-| CA-09.2 | **Dado** gastos de la misma categoría en otros meses, **entonces** solo se cuenta lo gastado en el mes consultado. |
-| CA-09.3 | **Dado** una categoría inactiva con presupuesto, **entonces** no aparece en el estado de presupuestos. |
-| CA-09.4 | **Dado** una categoría sin presupuesto, **entonces** no aparece en el estado de presupuestos. |
-| CA-09.5 | **Cuando** hay al menos un presupuesto en `ALERTA` o `EXCEDIDO` en el mes actual, **entonces** todas las pantallas muestran un aviso visible que indica cuáles. El aviso no depende solo del color. |
-| CA-09.6 | **Dado** un límite que se baja por debajo de lo ya gastado, **entonces** el estado se recalcula con el nuevo límite. |
+| CA-09.1 | **Dado** un límite de $ 100.000,00 y gastado de $ 79.999,99, **cuando** consulto o ejecuto la operación indicada, **entonces** el estado es `NORMAL`. Con $ 80.000,00 es `ALERTA`. Con $ 100.000,00 es `ALERTA`. Con $ 100.000,01 es `EXCEDIDO`. |
+| CA-09.2 | **Dado** que la misma categoría tiene gastos registrados en varios meses, **cuando** consulto el estado del presupuesto para un mes concreto, **entonces** solo se cuenta lo gastado en el mes consultado. |
+| CA-09.3 | **Dado** que una categoría inactiva conserva un presupuesto, **cuando** consulto el estado de presupuestos del mes, **entonces** no aparece en el estado de presupuestos. |
+| CA-09.4 | **Dado** que una categoría activa no tiene presupuesto, **cuando** consulto el estado de presupuestos del mes, **entonces** no aparece en el estado de presupuestos. |
+| CA-09.5 | **Dado** que hay al menos un presupuesto en estado ALERTA o EXCEDIDO para el mes actual, **cuando** abro las distintas pantallas de la aplicación, **entonces** todas las pantallas muestran un aviso visible que indica cuáles. El aviso no depende solo del color. |
+| CA-09.6 | **Dado** que el gasto acumulado de una categoría supera el nuevo límite que se desea fijar, **cuando** reduzco el límite del presupuesto, **entonces** el estado se recalcula con el nuevo límite. |
 
 ## 7. Casos borde
 
@@ -208,6 +226,9 @@ Fecha de referencia para los ejemplos: **hoy = 2026-10-30**.
 
 ## 8. Requisitos no funcionales
 
+- **Origen y CORS:** el servidor entrega frontend y API desde el mismo origen y el cliente consume rutas relativas `/api`; no se requiere middleware CORS. Si se separan los orígenes, se debe configurar una lista explícita de orígenes permitidos, nunca `*`. CORS no reemplaza autenticación.
+- **Demo pública:** la publicación es solo para evaluación académica con datos ficticios/de prueba; sin login, no se deben ingresar datos reales.
+
 - **Validación en el servidor:** toda regla se valida en el backend aunque la interfaz también la valide.
 - **Interfaz:** adaptable a pantallas de celular y computadora; los campos tienen etiqueta; el estado de un presupuesto o el signo de un balance nunca se comunican solo por color.
 - **Seguridad básica:** consultas a la base de datos parametrizadas; el texto ingresado por la persona nunca se inserta como HTML.
@@ -218,11 +239,31 @@ Fecha de referencia para los ejemplos: **hoy = 2026-10-30**.
 
 Todas las preguntas funcionales del alcance actual están resueltas y documentadas en `preguntas-abiertas.md` y `plan.md` §7. No quedan pendientes ni ambigüedades que bloqueen el desarrollo o la entrega.
 
+## 10. Matriz de trazabilidad entre reglas e historias
+
+La matriz permite comprobar que cada regla de negocio está ejercitada por una o más historias. Las tareas detallan después qué prueba o pantalla implementa cada criterio.
+
+| Regla | Historias que la ejercitan |
+|---|---|
+| RN-01 a RN-05 | HU-01, HU-03 |
+| RN-06 a RN-08 | HU-07 |
+| RN-09 | HU-02, HU-03, HU-09 |
+| RN-10 | HU-03, HU-04 |
+| RN-11 | HU-02 |
+| RN-12 | HU-02, HU-05 |
+| RN-13 | HU-06 |
+| RN-14 | HU-02, HU-05 |
+| RN-15 | HU-02 |
+| RN-16 | HU-04 |
+| RN-17 | HU-01 a HU-09 (persistencia de las operaciones incluidas) |
+
 ## Historial de cambios
 
-- [cambio] 2026-10-30 — Versión 0.1: objetivo, alcance, reglas de negocio e historias de usuario, a partir de `ideas.md`, `decisiones.md` y `glosario.md`.
+- [cambio] 2026-10-30 — Versión 0.1: objetivo, alcance, reglas de negocio e historias de usuario, a partir de `idea.md`, `decisiones.md` y `glosario.md`.
 - [cambio] 2026-10-30 — Versión 1.0: resueltos los pendientes marcados (Q-12, Q-13: qué pasa con presupuestos al eliminar o desactivar; RN-17: mes obligatorio en reportes). Agregados casos borde CB-01 a CB-26.
 
 - [cambio] 2026-11-15 — Se aclara el alcance de seguridad: los archivos de pruebas no se exponen por HTTP, se agregan cabeceras de seguridad y límite de cuerpo JSON; el sistema sigue siendo de uso local/controlado por no tener autenticación.
 
 - [cambio] 2026-11-15 — Se explicita que los límites de longitud se cuentan en puntos de código Unicode y se actualiza la versión documental.
+
+- [cambio] 2026-11-16 — Se explicita la relación RN-HU, se completa el formato Dado/Cuando/Entonces en los criterios y se alinea el alcance con la demo académica sin autenticación.

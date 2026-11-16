@@ -4,7 +4,7 @@
 
 Relaciona cada historia, regla de negocio y caso borde de [`spec.md`](spec.md) con las pruebas que los mencionan y verifican. Los ids `T-xx.n` son los de los tests automáticos (`backend/test` y `frontend/test`); los ítems manuales son los de [`pruebas-manuales.md`](pruebas-manuales.md) (`T-xx #n`).
 
-**Resultado integral registrado por el equipo:** 172/172 pruebas de backend y 93/93 de frontend aprobadas. El equipo también confirma realizados y aprobados los recorridos manuales, el escenario de punta a punta y la comprobación desde un clon limpio. En la revisión independiente se reprodujeron 17 pruebas backend seleccionadas y 93 pruebas frontend; el detalle se encuentra en `INFORME-VERIFICACION.md`. La prueba `T-22.7` verifica que cada RN y cada CB esté nombrado en algún test o ítem manual. Esa prueba no lee este archivo: la relación que sigue es la matriz de cobertura documentada.
+**Resultado de la ejecución local reproducida el 2026-11-16:** 175/175 pruebas de backend y 93/93 de frontend aprobadas. El equipo también registra como realizados los recorridos manuales, el escenario de punta a punta y la comprobación desde un clon limpio; el informe distingue esa confirmación de las pruebas reproducidas en esta revisión. La prueba `T-22.7` verifica que cada RN y cada CB esté nombrado en algún test o ítem manual. Esa prueba no lee este archivo: la relación que sigue es la matriz de cobertura documentada.
 
 **Estado:** COMPLETADO. Las verificaciones automatizadas integrales y manuales de aceptación se realizaron durante el desarrollo y fueron aprobadas según la confirmación del responsable del proyecto. El detalle de escenarios se registra en `pruebas-manuales.md`.
 
@@ -95,3 +95,4 @@ No quedan defectos conocidos abiertos en esta revisión. El antiguo DEF-01 está
 
 - [cambio] 2026-11-09 — Se actualizó la matriz para que las referencias manuales coincidan con las listas T-16 a T-21 incorporadas en `pruebas-manuales.md`. Se registraron los resultados automáticos reportados por el equipo (172 backend y 93 frontend) y se vinculó la matriz con el registro de validación manual.
 - [cambio] 2026-11-15 — Se consolida el cierre integral del MVP: suites automáticas, escenarios manuales y clon limpio completados; el informe separa los resultados del equipo de la reproducción técnica adicional realizada durante la auditoría.
+- [cambio] 2026-11-16 — Se actualiza el resultado con la ejecución completa de 175 pruebas backend y 93 frontend.

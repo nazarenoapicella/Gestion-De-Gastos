@@ -2,18 +2,18 @@
 
 Sistema web para registrar ingresos y gastos personales, ver el balance de cada mes, entender en qué categorías se gasta más y recibir avisos cuando se supera un límite propio.
 
-> **Estado (2026-11-15): COMPLETADO.** El equipo confirma la aprobación de las suites automatizadas completas (**175/175 backend y 93/93 frontend**), los escenarios manuales, el recorrido integral y la ejecución desde un clon limpio. La verificación técnica adicional y el detalle del cierre se encuentran en [`docs/INFORME-VERIFICACION.md`](docs/INFORME-VERIFICACION.md), [`docs/tasks.md`](docs/tasks.md) y [`docs/pruebas-manuales.md`](docs/pruebas-manuales.md).
+> **Estado (2026-11-16): COMPLETADO.** El equipo confirma la aprobación de las suites automatizadas completas (**175/175 backend y 93/93 frontend**), los escenarios manuales, el recorrido integral y la ejecución desde un clon limpio. La verificación técnica adicional y el detalle del cierre se encuentran en [`docs/INFORME-VERIFICACION.md`](docs/INFORME-VERIFICACION.md), [`docs/tasks.md`](docs/tasks.md) y [`docs/pruebas-manuales.md`](docs/pruebas-manuales.md).
 
 ## Demo en línea
 
 **Aplicación publicada:** https://gestion-de-gastos-yk18.onrender.com/
 
-Está desplegada en Render (plan gratuito) como un único servicio que sirve la API y la página desde el mismo origen, por lo que no requiere configuración de CORS.
+El diseño previsto para la demo es un único servicio que sirve la API y la página desde el mismo origen. El navegador llama a rutas relativas `/api`, por lo que CORS no se configura ni se necesita en esta arquitectura. Si frontend y backend se separaran, habría que habilitar una allowlist estricta del origen del frontend; nunca `*`.
 
 - Si nadie la usó en los últimos 15 minutos, el primer acceso puede demorar alrededor de un minuto mientras el servicio se reactiva.
 - La base SQLite vive en el disco temporal del servicio: los datos cargados se pierden cuando el servicio se reinicia o se vuelve a desplegar, y se recrean las 11 categorías por defecto.
 - Variable de entorno configurada en el panel de Render (no está en el repositorio): `NODE_VERSION=22`.
-- La demo no tiene login: cualquiera que conozca la dirección puede ver y modificar los datos, por eso solo debe usarse con datos de prueba.
+- La demo no tiene login: cualquiera que conozca la dirección puede ver y modificar los datos. La publicación es solo para evaluación académica; usá exclusivamente datos ficticios/de prueba, nunca información financiera real.
 
 **Recorrido sugerido para probarla:** registrar un gasto y un ingreso, mirar el balance en el resumen, definir un límite de presupuesto para una categoría y cargar gastos hasta superar el 80 % para ver el aviso.
 
@@ -117,7 +117,7 @@ AGENTS.md    reglas generales y ciclo de trabajo
 
 Se lee en este orden:
 
-1. [`docs/ideas.md`](docs/ideas.md): qué necesita el cliente.
+1. [`docs/idea.md`](docs/idea.md): qué necesita el cliente.
 2. [`docs/glosario.md`](docs/glosario.md): significado de cada término.
 3. [`docs/decisiones.md`](docs/decisiones.md) y [`docs/preguntas-abiertas.md`](docs/preguntas-abiertas.md): qué se decidió y qué se consultó.
 4. [`docs/spec.md`](docs/spec.md): **el contrato**: reglas de negocio, historias de usuario y casos borde.

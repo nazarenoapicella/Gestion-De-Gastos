@@ -24,7 +24,7 @@ Este archivo lo lee **todo agente antes de empezar**. Las reglas propias de cada
 ## Estructura del repositorio
 
 ```
-docs/        Documentación del proyecto (ideas, decisiones, glosario, spec, plan, tasks…)
+docs/        Documentación del proyecto (idea, decisiones, glosario, spec, plan, tasks…)
 rules/       Reglas de cada agente
 backend/     API y acceso a datos
 frontend/    Páginas, estilos y scripts
@@ -36,7 +36,7 @@ README.md    Presentación y puesta en marcha
 
 | Agente | Qué hace | Reglas |
 |---|---|---|
-| Analista | Mantiene `docs/spec.md`, `docs/decisiones.md`, `docs/glosario.md`, `docs/preguntas-abiertas.md` e `docs/ideas.md`. | `rules/analista.md` |
+| Analista | Mantiene `docs/spec.md`, `docs/decisiones.md`, `docs/glosario.md`, `docs/preguntas-abiertas.md` e `docs/idea.md`. | `rules/analista.md` |
 | Arquitecto | Define la arquitectura. Escribe `docs/plan.md` y `docs/tasks.md`. | `rules/arquitecto.md` |
 | Dev backend | Implementa el backend en las capas Controller, Service y Repository. | `rules/backend.md` |
 | Dev frontend | Implementa el frontend en HTML, CSS y JavaScript. | `rules/frontend.md` |
@@ -54,7 +54,8 @@ README.md    Presentación y puesta en marcha
 7. **Idioma:** documentación, mensajes al usuario y nombres de dominio en español (`movimiento`, `categoria`, `presupuesto`). Sin tildes ni ñ en identificadores de código.
 8. **Dinero:** siempre centavos enteros. Nunca decimales flotantes.
 9. **Seguridad:** SQL parametrizado; el texto que ingresa la persona nunca se inserta como HTML.
-10. **Si dudás, preguntá.** Es más barato que rehacer.
+10. **Origen/CORS:** el servidor actual entrega frontend y API desde el mismo origen; no agregues CORS abierto ni `Access-Control-Allow-Origin: *`. Si se separan los servicios, documentá y probá una allowlist exacta del origen del frontend. CORS no reemplaza autenticación.
+11. **Si dudás, preguntá.** Es más barato que rehacer.
 
 ## Cómo se trabaja una tarea
 

@@ -1,6 +1,6 @@
 # Informe de verificación y cierre técnico — Gestión de Gastos
 
-**Fecha de cierre documental:** 2026-11-15  
+**Fecha de cierre documental:** 2026-11-16
 **Estado global:** COMPLETADO.
 
 ## Resultado de aceptación
@@ -9,7 +9,7 @@ El responsable del proyecto confirma que se ejecutaron satisfactoriamente las su
 
 | Alcance | Resultado registrado por el equipo | Estado |
 |---|---:|---|
-| Suite automatizada de backend | 172/172 aprobadas | COMPLETADO |
+| Suite automatizada de backend | 175/175 aprobadas | COMPLETADO |
 | Suite automatizada de frontend | 93/93 aprobadas | COMPLETADO |
 | Escenarios manuales de aceptación | Todos los escenarios del registro | COMPLETADO |
 | Recorrido integral de punta a punta | Realizado | COMPLETADO |
@@ -20,7 +20,7 @@ El responsable del proyecto confirma que se ejecutaron satisfactoriamente las su
 | Comprobación | Resultado |
 |---|---|
 | `cd frontend && node --test` | 93/93 aprobadas. |
-| `cd backend && node --test test/categorias.unicode.test.js test/dinero.test.js test/fecha.test.js test/trazabilidad.test.js` | 17/17 aprobadas. |
+| `cd backend && npm test` | 175/175 aprobadas. |
 | `node --check` sobre los archivos JavaScript de backend y frontend | Sin errores de sintaxis. |
 
 ## Correcciones técnicas incorporadas
@@ -32,6 +32,10 @@ El responsable del proyecto confirma que se ejecutaron satisfactoriamente las su
 - Se incorporaron cabeceras de seguridad, límite de 16 KiB para JSON, `Cache-Control: no-store` en API y bloqueo de acceso HTTP a `/test/`.
 - Se agregó manejo explícito de payload JSON demasiado grande con HTTP 413.
 - Se sincronizaron README, backlog, trazabilidad, especificación y registro manual con el estado final.
+- Se utiliza el nombre singular `docs/idea.md` para el documento de idea y se actualizan las referencias; se estructura el registro de preguntas abiertas con prioridad, reglas/historias afectadas, impacto y decisión adoptada.
+- Se completa la trazabilidad RN-HU y se asegura el formato Dado/Cuando/Entonces en los criterios de aceptación.
+- Se documenta la arquitectura same-origin: la interfaz y la API comparten origen y usan rutas relativas `/api`, por lo que no se necesita CORS; si se separan, se exige una allowlist explícita y no `*`.
+- Se limita explícitamente el uso de la demo sin autenticación a evaluación académica con datos ficticios/de prueba.
 
 
 ## Orden de las tareas y por qué
@@ -51,3 +55,6 @@ Las reglas más delicadas (importes, fechas y validez de la categoría) quedaron
 
 No quedan tareas, verificaciones ni decisiones funcionales abiertas dentro del alcance del MVP. Las limitaciones de alcance aceptadas se documentan como decisiones vigentes en `decisiones.md`, `spec.md` y `trazabilidad.md`; no constituyen trabajo pendiente.
 
+
+
+**Alcance de esta actualización:** la revisión verificó las suites automatizadas locales y la consistencia documental. No se afirma que la URL de despliegue haya sido abierta ni que el servicio en vivo se encuentre disponible en este momento.

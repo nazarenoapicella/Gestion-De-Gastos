@@ -1,6 +1,6 @@
 # Plan técnico — Gestion De Gastos
 
-> Versión 1.0 · Estado: Vigente · Última actualización: 2026-10-30
+> Versión 1.1 · Estado: Vigente · Última actualización: 2026-11-16
 
 Lo arma el agente **arquitecto** antes de escribir código. Responde siete preguntas. La 5 es la clave: si una regla de negocio no tiene lugar en el plan, nadie la va a programar.
 
@@ -123,6 +123,15 @@ Elemento de `porCategoria`: `{ categoriaId, nombre, totalCentavos, porcentaje }`
 
 Regla de uso: **400** si el dato enviado es inválido; **409** si el dato es válido pero choca con el estado actual del sistema.
 
+
+### 4.1. Origen de las solicitudes y CORS
+
+En la arquitectura vigente, Express sirve los archivos estáticos de `frontend/` y la API `/api` desde el mismo servidor, protocolo, host y puerto. El cliente usa rutas relativas (`/api/...`), por lo que las solicitudes del navegador son **same-origin**. En esta arquitectura no se necesita middleware CORS ni encabezados `Access-Control-Allow-Origin`; no se debe agregar `Access-Control-Allow-Origin: *`.
+
+Si en una versión futura se separan frontend y backend en dominios o puertos distintos, el backend deberá habilitar CORS mediante una lista explícita de orígenes autorizados (por ejemplo, una variable `FRONTEND_ORIGIN` con el origen exacto del frontend), limitar métodos y encabezados a los necesarios y rechazar orígenes no autorizados. No se utilizará el comodín `*`.
+
+CORS solo regula qué respuestas puede leer JavaScript en navegadores desde otro origen; no autentica usuarios ni impide que clientes como `curl` o Postman llamen a una API pública. Como el MVP no tiene login, la demo pública es exclusivamente académica y debe usar datos ficticios/de prueba.
+
 ## 5. ¿Dónde vive cada regla?
 
 | RN | Dónde se programa | Capa | Tareas |
@@ -186,3 +195,5 @@ Ninguna bloquea tareas. Se avanza con el supuesto indicado.
 - [cambio] 2026-10-30 — Versión 1.0 del plan, a partir de `spec.md` v1.0.
 
 - [cambio] 2026-11-15 — Se agrega límite de 16 KiB para JSON, cabeceras de seguridad, `Cache-Control: no-store` en API y bloqueo de acceso HTTP a `/test/`.
+
+- [cambio] 2026-11-16 — Se documenta la política same-origin y por qué CORS no requiere middleware en la arquitectura actual; se define la allowlist estricta para una futura separación.
